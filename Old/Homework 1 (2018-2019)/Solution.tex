@@ -1,0 +1,328 @@
+% !TeX encoding = UTF-8
+% !TeX program = pdflatex
+
+\documentclass[11pt]{article}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{lineno}
+\lstloadlanguages{Python}
+\lstset{%
+	basicstyle=\fontsize{10}{11}\ttfamily\color{black},
+	commentstyle=\ttfamily\color{red},
+	keywordstyle=\ttfamily\color{blue},
+	stringstyle=\color{orange},
+	tabsize=2,
+	numbers=left,
+	numberstyle=\tiny,
+	firstnumber=1,
+	numberfirstline=false,
+	frame=single,
+	showstringspaces=false,
+	inputencoding=utf8,
+	breaklines=true
+}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\title{Homework 1 - Algorithm Design \\ \bigskip \large Sapienza University of Rome}
+\date{\today}
+\author{Marco Costa 1691388}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 1}
+The goal of this exercise is to cluster the points of \textbf{X} using the first \textit{\textbf{k}} points \textbf{C = $\mathbf{\{ \pi(X)_{1},...,\pi(X)_{k} \}}$} as center (where $\mathit{\pi(X)}$ is a permutation). For any \textit{\textbf{k}}, the output should be optimal with respect of the objective function $\mathbf{\displaystyle\max_{x \in X} \min_{c \in C} d(x,c)}$. \\
+This problem is known as k-center clustering problem, and it's NP-HARD. \\
+Fortunately, it is possible to find an approximation using a greedy algorithm. \\
+The greedy clustering algorithm simply chooses the point farthest away from the current set of centers in each iteration as the new center. It can be described in this way:
+\begin{itemize}
+	\item Pick an arbitrary point $\mathbf{c_{i}}$ into $\mathbf{C}$;
+	\item For every point $\mathbf{x \in X}$ compute $\mathbf{d_{i}(x,c_{i})}$;
+	\item Pick the point $\mathbf{c_{i}}$ with the highest distance from $\mathbf{c_{i-1}}$ ($\displaystyle\max_{x \in X} d(x, c_{i})$).
+	In this case, distance must be 3. If there are no points that have the distance 3, then the distance must be 1;
+	\item Add it to the set of centers $\mathbf{C}$;
+	\item Continue till \textit{\textbf{k}} centers are found (\textit{i=1,...,k}).
+\end{itemize}
+
+\subsection{Analysis of the algorithm}
+\begin{itemize}
+	\item The $i^{th}$ iteration of choosing the $i^{th}$ center takes $\mathbf{O(|X|)}$ time.
+	\item There are  \textit{\textbf{k }} iterations, so overall the algorithm takes $\mathbf{O(k|X|)}$ time.
+\end{itemize}
+
+\subsection{Proof}
+The correctness of this algorithm can be proved by contradiction.\\
+Assume that $\mathbf{O^{*} = \{c^{∗}_{1},...,c^{∗}_{k}\}}$ is an optimal solution for the problem and $\mathbf{S = \{c_{1},...,c_{k}\}}$ the solution given by the greedy algorithm. If $\mathbf{S \ne O^{*}}$ so there is at
+least an optimum center $\mathbf{\bar{c}}$
+which belongs to $\mathbf{O^{*}}$ but not to $\mathbf{S}$. This means that, if this point was selected at the $\mathbf{(i-1)^{th}}$ iteration of the optimum
+algorithm because it has distance 3 from the center, so the greedy algorithm has
+not selected it as the optimum value to satisfy the objective function. But
+this is not possible, it first insert into the partition all
+the points of the space which have distance equals to 3 from the center
+and after the points with distance equals to 1 if needed.
+
+\subsection{2-approximation}
+The solution obtained using the greedy algorithm (the set $\mathbf{C}$) is a 2-approximation to the optimal solution ($\mathbf{r^{C}_{\infty}(X) \le 2r^{opt}_{\infty}}(X,k)$). 
+
+\subsubsection{Proof}
+Case 1: Every cluster of $\mathbf{C_{opt}}$ contains exactly one point of $\mathbf{C}$. 
+\begin{itemize}
+	\item Consider a point $\mathbf{x \in X}$;
+	\item Let $\mathbf{\bar{c}}$ be the center it belongs to in $\mathbf{C_{opt}}$;
+	\item Let $\mathbf{\bar{k}}$ be the center of $\mathbf{C}$ that is in $\mathbf{\Pi(C_{opt},\bar{c})}$;
+	\item $\mathbf{d(x,\bar{c}) = d(x,C_{opt}) \le r^{opt}_{\infty}(X,k)}$;
+	\item Similarly, $\mathbf{d(\bar{k},\bar{c}) = d(\bar{k},C_{opt}) \le r^{opt}_{\infty}(X,k)}$;
+	\item By the triangle inequality: $\mathbf{d(x,\bar{k}) \le d(x,\bar{c}) + d(\bar{c},\bar{k}) \le 2r^{opt}_{\infty}(X,k)}$	.
+\end{itemize}
+
+Case 2: There are two centers $\mathbf{\bar{k}}$ and $\mathbf{\bar{u}}$ of $\mathbf{C}$ that is in $\mathbf{\Pi(C_{opt},\bar{c})}$, for some $\mathbf{\bar{c} \in C_{opt}}$
+\begin{itemize}
+	\item Assume, without loss of generality, that $\mathbf{\bar{u}}$ was added later to the center set $\mathbf{C}$ by the greedy algorithm in the $\mathbf{i^{th}}$ iteration;
+	\item But since the greedy algorithm always chooses the point furthest away from the current set of centers, we have that $\mathbf{\bar{c} \in C_{i-1}}$, and \\ $\mathbf{r^{C}_{\infty}(X) \le r^{C_{i-1}}_{\infty}(X) = d(\bar{u},C_{i-1}) \le d(\bar{u},\bar{k}) \le d(\bar{u},\bar{c}) + d(\bar{c},\bar{k}) \le 2r^{opt}_{\infty}(X,k)}$.
+\end{itemize}
+
+\section{Exercise 2}
+It's possible to solve this problem using a bipartite graph \textbf{G(S,A,C)}, where \textbf{S} is the set containing streets, \textbf{A} is the set containing avenues and \textbf{C} is the set containing checkpoints (so a checkpoint is an edge that connects a street in \textbf{S} with an avenue in \textbf{A}).
+The goal is to find a vertex set $\mathbf{T \subseteq S \bigcup A}$ of minimum size.
+So the problem is a minimum vertex cover problem
+(because we want to find a set of vertices such that every edge of the graph
+has at least one endpoint in the set). It's possible to find \textbf{T} with:
+\begin{itemize}
+	\item Ford-Fulkerson’s algorithm to find the maximum matching;
+	\item Konig's theorem, which states that in any bipartite graph, the number of edges in a maximum matching is equal to the number of vertices in a minimum vertex cover.
+\end{itemize}
+Let’s consider \textbf{M}, a maximum cardinality matching in \textbf{G}. A matching is an edge set $\mathbf{M \subseteq E}$ such that no two edges of M have the same endpoint. Konig's theorem proves that the size of a
+maximum matching M is equal to the size of the minimum cardinality vertex cover \textbf{T}. \\
+It's possible to find the maximum matching set \textbf{M} applying Ford-Fulkerson algorithm in the bipartite flow network \textbf{G(S,A,C)}.
+\\
+Now it's possible to derive from the maximum alternating forest, built starting
+from non matched vertices in \textbf{S}, the minimum vertex cover set \textbf{T} using Konig's theorem.\\ 
+This set represent the minimum
+set of streets and avenues in which it's necessary to place cameras for covering checkpoints.
+
+\subsection{Analysis}
+The cost of this algorithm is dominated by the finding of the maximum
+flow (the cost of Ford-Fulkerson’s algorithm). So the total cost is \textbf{O(\textit{f}$|C|$)}, where \textit{\textbf{f}} is the maximum flow found and \textbf{C} is the set of the checkpoints.
+
+\section{Exercise 3}
+It's possible to solve this problem considering a complete graph \textbf{G(P,R)} where $\mathbf{P = M \bigcup F}$ is the set of friends (\textbf{M} is the set of male friends and \textbf{F} is the set of female friends) and R is the set of their relations (the edges of the graph). \\
+Each  edge
+has weight equals to 0 if the two friends don’t like each other, 1 otherwise. \\
+The goal is to find a subset I of people who
+like each other and who are equally bipartite (so equal number of male and
+female friends). \\
+The first point of the problem can be solved considering it as a k-clique problem. The algorithm proceed in this way:
+\begin{enumerate}
+	\item For each $\mathbf{\textbf{\textit{k}} \in \{2,|V|\}}$ it computes the k-clique and stores the cliques with \textbf{\textit{k}} edges in a set \textbf{S};
+	\item For each clique in \textbf{S} it computes the maximum bipartite matching in order to satisfy the second point (equal number of male and female);
+	\item For each value of \textbf{\textit{k}} it finds the maximum bipartite matching $\mathbf{M_{k}}$ which maximizes the value \\
+	$\mathbf{maxVal_{k} = \frac{1}{|M_{k}}} \sum_{(u,v) \in M_{k}}weight(u,v)$;
+	\item At the end it finds the maximum value between the various $\mathbf{maxVal_{k}}$ with $\mathbf{\textbf{\textit{k}} \in \{2,|V|\}}$ and returns the maximum matching corresponding to this value.
+\end{enumerate}
+
+\subsubsection{Implementation (pseudocode)}
+\begin{algorithm}
+	\label{euclid}
+	\begin{algorithmic}[1]
+		\State $V \gets vertices$
+		\State $E \gets edges$
+		\State $G \gets graph$
+		\State $maxD[|V|] \gets [0]$
+		\State $maxI[k] \gets$ [ ]
+		\For{$k \gets$ 0 to $|V|$}
+		\State $S \gets$ find-all k-cliques()
+		\For{s in S}
+		\State I $\gets$ bipartite matching of s
+		\If{sum weight(s)/$|I| >$ maxD[k]}
+		\State $maxD[k] \gets weight(s)/|I|$
+		\State $maxI[k] \gets I$
+		\EndIf
+		\EndFor
+		\EndFor
+		\State $index \gets max(maxD)$
+		\State\Return maxI[index] 
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Proof}
+This algorithm uses the k-clique problem, which is NP-COMPLETE, in fact, the reduction of this problem is polynomial. For this reason the implemented algorithm is NP-COMPLETE too.
+
+\section{Exercise 4}
+The input of the algorithm is the following:
+\begin{itemize}
+	\item costs: a list of tuple where the first element is the timestamp of the task, the second one is the cost of outsourcing;
+	\item C: hiring cost;
+	\item S: severance cost;
+	\item s: daily salary.
+\end{itemize}
+For first, the algorithm computes how many tasks with different timestamp there are. In this way it's possible to overlap tasks.
+After that, it joins the overlapping tasks generating a matrix in which there are the timestamps in the first row and the outsourcing costs in the second one.
+Then it generates a total cost matrix and initializes the first column, calculates the lowest cost for each instant using the costs of the previous instant and at the end returns the minimum total cost.
+
+\subsection{Analysis}
+The cost of the algorithm depends on iterative loops so it is linear: O(T), where T is the last
+time unit to consider. \\
+
+\subsection{Proof}
+To prove the correctness of the algorithm we could use proof by induction.
+We consider as basis step the first two couple of values inside total cost matrix , at this moment i = 0
+and the min of them is the min cost so far. As induction hypothesis we suppose that for i = k the
+cost computed as min of the couple of values inside total cost matrix is optimal. The inductive step is to
+prove that also for i = k + 1 the cost is optimal.
+
+\subsection{Implementation}
+The algorithm is implemented in \textit{\textbf{Python}}.
+\begin{lstlisting}[language=Python, caption=minCost]
+def minCost(costs, C, S, s):
+
+	# Determine the number of different tasks
+	T = 0
+	time = 0
+	for cost in costs:
+		if cost[0] != time:
+			time = cost[0]
+			T += 1
+
+	# Initialize outsourcing cost matrix
+	outsource = [[0 for x in range(0, T+1)] for x in range(0, 2)]
+
+	# Initialize total cost matrix
+	tc = [[0 for x in range(0, T+1)] for x in range(0, 2)]
+
+	# Construck outsourcing cost matrix joining different tasks with the same timestamp
+	time = 0
+	i = 0
+	j = 0
+	for cost in costs:
+		if j == 0:
+			outsource[0][i] = cost[0]
+			outsource[1][i] = cost[1]
+			time = cost[0]
+			j += 1
+		else:
+			if time == cost[0]:
+				outsource[1][i] += cost[1]
+			else:
+				i += 1
+				outsource[0][i] = cost[0]
+				outsource[1][i] = cost[1]
+				time = cost[0]
+
+	# Initialize first column of total cost matrix 
+	tc[0][0] = s + C
+	tc[1][0] = outsource[1][0]
+
+	# Construct rest of the total cost matrix 
+	for i in range(1, T):
+		tc[0][i] = min(tc[0][i-1] + (outsource[0][i] - outsource[0][i-1]) * s, tc[1][i-1] + C + s)
+		tc[1][i] = min(tc[0][i-1] + S + outsource[1][i], tc[1][i-1] + outsource[1][i])
+
+	# Return the minimum cost
+	return min(tc[0][T-1], tc[1][T-1])
+\end{lstlisting}
+
+\section{Exercise 5}
+\subsection{First part}
+The first part of the exercise can be solved using the Minimum Spanning Tree cycle property: \\
+\textit{For any cycle \textbf{C} in the graph,
+if the weight of an edge \textbf{e} of \textbf{C} is larger than the weights of all other
+edges of \textbf{C}, then e cannot belong to the MST}.
+\\
+The algorithm is based on a \textbf{DFS}. It determine if the
+two endpoints of \textit{\textbf{e}} are connected with a cycle respecting the property
+mentioned before. \\
+How it works:
+\begin{enumerate}
+	\item Run the DFS from one of the end-points of the
+input edge \textit{\textbf{e}} (\textbf{u} or \textbf{v} for the edge \textit{\textbf{(u, v, weight)}}) considering only outgoing edges which
+have weight less than the one of \textit{\textbf{e}};
+	\item \begin{itemize}
+		\item Case 1: If at the end of the \textbf{DFS}, the two vertices \textbf{u} and \textbf{v}
+get connected, then the edge \textit{\textbf{e}} can't be part of any \textbf{MST}
+because of the cycle property, in fact in this case there exists
+a cycle in the graph \textbf{G} containing the edge \textit{\textbf{e}} where \textit{\textbf{e}} is the
+edge with maximum weight.
+		\item Case 2: If at the end of the \textbf{DFS} \textbf{u} and
+\textbf{v} stay disconnected, then there is not a cycle between \textbf{u} and
+\textbf{v} where \textit{\textbf{e}} is the edge with maximum weight, so the edge
+considered can be part of the \textbf{MST}.
+	\end{itemize}
+\end{enumerate}
+The cost of this algorithm is dominated from the one of the \textbf{DFS}, which
+is \textbf{O($|V| + |E|$)}.
+
+\subsection{Second part}
+For this second part, the algorithm described before was used to check if
+the given edge \textit{\textbf{e}} could be part of a Minimum Spanning Tree. After
+checking the previous condition, Kruskal’s algorithm was used to compute
+the \textbf{MST} containing \textit{\textbf{e}}: the cost of this algorithm is
+\textbf{O($|E|log|E|$)}.
+
+\subsubsection{Implementation}
+The algorithm is implemented in \textit{\textbf{Python}}.
+\begin{lstlisting}[language=Python, caption=MST given an edge]
+def give_a_mst(self, edge):
+	if self.edge_in_mst(edge):
+		print("The edge",str(edge),"belongs to MST!")
+		print("Minimum Spanning Tree:", end="")
+		return self.kruskal()
+	else:
+		print("The edge",str(edge),"doesn't belong to MST!")
+		return None
+\end{lstlisting}
+This algorithm is very symple: \\
+It checks if the edge is contained in the MST using the algorithm described in the first part.\\
+If the result is positive, then the Kruskal's algorithm is executed and the MST is output, otherwise nothing is returned.
+
+\begin{lstlisting}[language=Python, caption=Kruskal's algorithm]
+def kruskal(self):
+	parent = dict()
+	rank = dict()
+
+	for vertex in self.vertex:
+		parent[vertex] = vertex
+		rank[vertex] = 0
+
+	def find(vertex):
+		if parent[vertex] != vertex:
+			parent[vertex] = find(parent[vertex])
+		return parent[vertex]
+
+	def union(vertex1, vertex2):
+		root1 = find(vertex1)
+		root2 = find(vertex2)
+		if rank[root1] < rank[root2]:
+			parent[root1] = root2
+		elif rank[root1] > rank[root2]:
+			parent[root2] = root1
+		else:
+			parent[root2] = root1
+			rank[root2] += 1
+
+	mst = Graph("directed")
+	minimum_spanning_tree = set()
+	edges = self.sorted_by_weight()
+	for edge in edges:
+		v1, v2, w = edge
+		if find(v1) != find(v2):
+			union(v1, v2)
+			minimum_spanning_tree.add(edge)
+	for node in self.get_nodes():
+		mst.add_node(node)
+	for edge in minimum_spanning_tree:
+		mst.add_edge(edge)
+	return mst
+\end{lstlisting}
+
+\appendix
+\section{Code}
+The whole implementation of the exercises are attached in the archive \\ \textit{HW1-AD\_Marco\_Costa\_1691388.tar.gz}
+
+\end{document}
