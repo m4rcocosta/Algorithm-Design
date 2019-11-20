@@ -1,7 +1,6 @@
-% !TeX encoding = UTF-8
-% !TeX program = pdflatex
-
-\documentclass[11pt]{report}
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{a4paper,top=3cm,bottom=3cm,left=3cm,right=3cm}
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
@@ -9,13 +8,20 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage {tikz}
+\usetikzlibrary {positioning}
+\usepackage {xcolor}
 
-\title{Homework 1 - Algorithm Design \\ \bigskip \large Sapienza University of Rome}
-\date{\today}
-\author{Marco Costa, 1691388}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\title{\textbf{Homework 1 - Algorithm Design} \\ \bigskip \large \textbf{Sapienza University of Rome}}
+\date{\textbf{\today}}
+\author{\textbf{Marco Costa, 1691388}}
 \pagestyle{fancy}
 \fancyhead[L]{Marco Costa, 1691388}
-\fancyhead[R]{Homework 1 - Algorithm Design}
+\fancyhead[R]{Algorithm Design - Homework 1}
 
 \begin{document}
 \maketitle
@@ -26,11 +32,57 @@
 \newpage
 
 \section*{Exercise 2}
+\textbf{Problem}: Given a weighted tree T with n nodes, find the complete graph G of minimum weight such that T $\subseteq$ G and T is the unique minimum spanning tree of G. \\
+\textbf{Idea}: 
+Insert edges that are not in the tree so as to obtain the complete graph. These edges must have a greater weight than those of the tree, so that T is the only MST of G. \\
+\textbf{Hint}: Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cust, we use this structures to solve the problem. \\
+\textbf{First solution}:
+\begin{algorithm}
+	\caption{Find complete graph}\label{euclid}
+	\begin{algorithmic}[1]
+		\For{$u$ in $set_1$}
+			\For{$v$ in $set_2$}
+				\If {$e_{new} = (u,v)$ not in $E$}
+					\State $e_{new}$.setWeight($e$.getWeight() + 1)
+					\State $G$.addEdge($e_{new}$)
+				\EndIf
+			\EndFor		
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}\\
+Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|E| = \frac{n^2 - n}{2}$ and the cost is \textbf{O}($n^2$) \\
+\textbf{Second solution}:
 
 \newpage
 
 \section*{Exercise 3}
+\begin {tikzpicture}
+\begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
+\node(f) at (1,2.5) {f};
+\node(a) at (5,5) {a};
+\node(b) at (5,0) {b};
+\node(c) at (10,5) {c};
+\node(d) at (10,0) {d};
+\node(s) at (15,2.5) {s};
+\end{scope}
+\begin{scope}[every edge/.style={draw=black,very thick}]
+\path [->] (f) edge node[sloped,above]{$n_a$} (a);
+\path [->] (f) edge node[sloped,above]{$n_b$} (b);
 
+\path [->] (a) edge node[sloped,above]{$n_a - s_a$} (c);
+\path [->] (a) edge node[pos=0.2,sloped,above]{$n_a - s_a$} (d);
+\path [->] (b) edge node[pos=0.2,sloped,above]{$n_b - s_b$} (c);
+\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (d);
+
+\path [->] (a) edge[left] node{$n_a - s_a$} (b);
+\path [->] (d) edge[right] node{$n_d - s_d$} (c);
+
+\path [->] (a) edge[bend left=40] node[sloped,above]{$s_a$} (s);
+\path [->] (b) edge[bend right=40] node[sloped,below]{$s_b$} (s);
+\path [->] (c) edge node[sloped,above]{$s_c$} (s);
+\path [->] (d) edge node[sloped,above]{$s_d$} (s);
+\end{scope}
+\end{tikzpicture}
 \newpage
 
 \section*{Exercise 4}
