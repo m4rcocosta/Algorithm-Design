@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{geometry}
-\geometry{a4paper,top=3cm,bottom=3cm,left=3cm,right=3cm}
+\geometry{a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm}
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
@@ -28,15 +28,51 @@
 \newpage
 
 \section*{Exercise 1}
-
+\subsection*{Problem}
+\subsubsection*{Solution}
+Let's define a matrix M ($k \times n$), in which we have the expected value opening the $i^{th}$ box having $j$ as current best reward ($i \in [0, k-1]$, $j \in [0, n]$)
+\begin{algorithm}
+	\caption{Populate the matrix}\label{euclid}
+	\begin{algorithmic}[1]
+		\For{$i$ in $(0, ..., k-1)$}
+		\For{$j$ in $(0, ..., n)$}
+		\State $M[i,j] \gets -\sum\limits_{h=1}^i c_h + \frac{j}{n+1}(j-1) + \frac{1}{n+1}\sum\limits_{h=j}^n h$
+		\EndFor		
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}\\
+Now, for each box we can calculate the "\textit{a priori}" expected value as follow: \\ \\
+$\mathbf{\bar{v_k} = \sum\limits_{i=0}^n P_{k-1}(i)v_k(i)}$ \\ \\
+where $\mathbf{P_{k-1}(i)}$ is the probability of having reward i at least in one of the $\mathit{k-1}$ boxes, while $\mathbf{v_k(i)}$ is the expected value opening the $\mathit{k^{th}}$ box having as current best reward $\mathit{i}$. \\ \\
+$\mathbf{P_{k-1}(i) = (\frac{1}{n+1})(\frac{i+1}{n+1})^{k-2}(k-1)}$, \qquad $\mathbf{v_k(i) = M[k,i]}$ \\ \\
+So we have: \\ \\
+$\mathbf{\bar{v_k} = \sum\limits_{i=0}^n (\frac{1}{n+1})(\frac{i+1}{n+1})^{k-2}(k-1)M[k,i] = \frac{k-1}{n+1} \sum\limits_{i=0}^n (\frac{i+1}{n+1})^{k-2}M[k,i]}$ \\ \\
+Now we have to calculate $\mathbf{\bar{v_k}}$ for each box and return the max:
+\begin{algorithm}
+	\caption{Find expected optimal reward}\label{euclid}
+	\begin{algorithmic}[1]
+		\State $k_{max} \gets 0$
+		\State $v[k] \gets \emptyset$
+		\For{$i$ in $(0, ..., k-1)$}
+		\For{$j$ in $(0, ..., n)$}
+		\State $v[i]$ += $\frac{k-1}{n+1}(\frac{i+1}{n+1})^{k-2}M[k,i]$
+		\EndFor
+		\If{$v[i] > v[k_{max}]$}
+		\State $k_{max} \gets i$
+		\EndIf	
+		\EndFor
+		\State return $v[k_{max}]$
+	\end{algorithmic}
+\end{algorithm}\\
 \newpage
 
 \section*{Exercise 2}
-\textbf{Problem}: Given a weighted tree T with n nodes, find the complete graph G of minimum weight such that T $\subseteq$ G and T is the unique minimum spanning tree of G. \\
+\subsection*{First problem}
+Given a weighted tree T with n nodes, find the complete graph G of minimum weight such that T $\subseteq$ G and T is the unique minimum spanning tree of G. \\
 \textbf{Idea}: 
 Insert edges that are not in the tree so as to obtain the complete graph. These edges must have a greater weight than those of the tree, so that T is the only MST of G. \\
-\textbf{Hint}: Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cust, we use this structures to solve the problem. \\
-\textbf{First solution}:
+\textbf{Hint}: Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cuts, we use this structures to solve the problem. \\
+\subsubsection*{Solution}
 \begin{algorithm}
 	\caption{Find complete graph}\label{euclid}
 	\begin{algorithmic}[1]
@@ -49,13 +85,17 @@ Insert edges that are not in the tree so as to obtain the complete graph. These 
 			\EndFor		
 		\EndFor
 	\end{algorithmic}
-\end{algorithm}\\
-Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|E| = \frac{n^2 - n}{2}$ and the cost is \textbf{O}($n^2$) \\
-\textbf{Second solution}:
+\end{algorithm}
+Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|E| = \frac{n^2 - n}{2}$ and the cost is \textbf{O}($n^2$)
+\subsection*{Second problem}
+
+\subsubsection*{Solution}
 
 \newpage
 
 \section*{Exercise 3}
+\subsection*{First Problem}
+\subsubsection*{Solution}
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
 \node(f) at (1,2.5) {f};
@@ -83,9 +123,12 @@ Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|
 \path [->] (d) edge node[sloped,above]{$s_d$} (s);
 \end{scope}
 \end{tikzpicture}
+\subsection*{Second Problem}
+\subsubsection*{Solution}
 \newpage
 
 \section*{Exercise 4}
-
+\subsection*{Problem}
+\subsubsection*{Solution}
 
 \end{document}
