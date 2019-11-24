@@ -98,33 +98,63 @@ Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|
 \subsubsection*{Solution}
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
-\node(f) at (1,2.5) {f};
-\node(a) at (5,5) {a};
-\node(b) at (5,0) {b};
-\node(c) at (10,5) {c};
-\node(d) at (10,0) {d};
-\node(s) at (15,2.5) {s};
+\node(f) at (0,0) {F};
+\node(a) at (5.5,1) {f$_a$};
+\node(b) at (5.5,-1) {f$_b$};
+\node(c) at (11,1) {f$_c$};
+\node(d) at (11,-1) {f$_d$};
+\node(s) at (16,0) {s};
 \end{scope}
 \begin{scope}[every edge/.style={draw=black,very thick}]
 \path [->] (f) edge node[sloped,above]{$n_a$} (a);
 \path [->] (f) edge node[sloped,above]{$n_b$} (b);
 
 \path [->] (a) edge node[sloped,above]{$n_a - s_a$} (c);
-\path [->] (a) edge node[pos=0.2,sloped,above]{$n_a - s_a$} (d);
-\path [->] (b) edge node[pos=0.2,sloped,above]{$n_b - s_b$} (c);
+\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (c);
 \path [->] (b) edge node[sloped,above]{$n_b - s_b$} (d);
 
 \path [->] (a) edge[left] node{$n_a - s_a$} (b);
 \path [->] (d) edge[right] node{$n_d - s_d$} (c);
 
-\path [->] (a) edge[bend left=40] node[sloped,above]{$s_a$} (s);
-\path [->] (b) edge[bend right=40] node[sloped,below]{$s_b$} (s);
+\path [->] (a) edge[bend left=25] node[sloped,above]{$s_a$} (s);
 \path [->] (c) edge node[sloped,above]{$s_c$} (s);
 \path [->] (d) edge node[sloped,above]{$s_d$} (s);
 \end{scope}
 \end{tikzpicture}
 \subsection*{Second Problem}
 \subsubsection*{Solution}
+\begin {tikzpicture}
+\begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
+	\node(f) at (0,0) {F};
+	\node(a) at (4,1) {f$_a$};
+	\node(b) at (4,-1) {f$_b$};
+	\node(c) at (8,1) {f$_c$};
+	\node(d) at (8,-1) {f$_d$};
+	\node(b1) at (12,2) {$b_1$};
+	\node(b2) at (12,0) {$b_2$};
+	\node(b3) at (12,-2) {$b_3$};
+	\node(s) at (16,0) {s};
+\end{scope}
+\begin{scope}[every edge/.style={draw=black,very thick}]
+	\path [->] (f) edge node[sloped,above]{$n_a$} (a);
+	\path [->] (f) edge node[sloped,above]{$n_b$} (b);
+	
+	\path [->] (a) edge node[pos=0.6,sloped,above]{$n_a - s_a$} (c);
+	\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (c);
+	\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (d);
+	
+	\path [->] (a) edge[left] node{$n_a - s_a$} (b);
+	\path [->] (d) edge[right] node{$n_d - s_d$} (c);
+	
+	\path [->] (a) edge[bend left=10] node[sloped,above]{$s_a$} (b1);
+	\path [->] (c) edge node[sloped,above]{$s_c$} (b2);
+	\path [->] (d) edge node[sloped,above]{$s_d$} (b3);
+	
+	\path [->] (b1) edge node[sloped,above]{$c_1$} (s);
+	\path [->] (b2) edge node[sloped,above]{$c_2$} (s);
+	\path [->] (b3) edge node[sloped,above]{$c_3$} (s);
+\end{scope}
+\end{tikzpicture}
 \newpage
 
 \section*{Exercise 4}
