@@ -55,7 +55,7 @@ Now we have to calculate $\mathbf{\bar{v_k}}$ for each box and return the max:
 		\State $v[k] \gets \emptyset$
 		\For{$i$ in $(0, ..., k-1)$}
 		\For{$j$ in $(0, ..., n)$}
-		\State $v[i]$ += $\frac{k-1}{n+1}(\frac{i+1}{n+1})^{k-2}M[k,i]$
+		\State $v[i]$ += $\frac{k-1}{n+1}(\frac{i+1}{n+1})^{k-2}M[i,j]$
 		\EndFor
 		\If{$v[i] > v[k_{max}]$}
 		\State $k_{max} \gets i$
