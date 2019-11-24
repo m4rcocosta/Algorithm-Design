@@ -68,29 +68,30 @@ Now we have to calculate $\mathbf{\bar{v_k}}$ for each box and return the max:
 
 \section*{Exercise 2}
 \subsection*{First problem}
-Given a weighted tree T with n nodes, find the complete graph G of minimum weight such that T $\subseteq$ G and T is the unique minimum spanning tree of G. \\
+Given a weighted tree T with n nodes, find the complete graph G of minimum weight such that T $\subseteq$ G and T is the unique minimum spanning tree of G.
+\subsubsection*{Solution}
 \textbf{Idea}: 
 Insert edges that are not in the tree so as to obtain the complete graph. These edges must have a greater weight than those of the tree, so that T is the only MST of G. \\
-\textbf{Hint}: Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cuts, we use this structures to solve the problem. \\
-\subsubsection*{Solution}
 \begin{algorithm}
 	\caption{Find complete graph}\label{euclid}
 	\begin{algorithmic}[1]
-		\For{$u$ in $set_1$}
-			\For{$v$ in $set_2$}
-				\If {$e_{new} = (u,v)$ not in $E$}
-					\State $e_{new}$.setWeight($e$.getWeight() + 1)
-					\State $G$.addEdge($e_{new}$)
+		\For{$u$ in $V$}
+			\For{$v$ in $V$}
+			\State $e \gets (u,v)$
+				\If {$e$ not in $E$}
+					\State $weight \gets max(u.getHeaviestEdge().getWeight(), v.getHeaviestEdge().getWeight())$
+					\State $e$.setWeight(weight + 1)
+					\State $G$.addEdge($e$)
 				\EndIf
 			\EndFor		
 		\EndFor
 	\end{algorithmic}
-\end{algorithm}
+\end{algorithm} \\
 Cost: \textbf{O}($|E|$), but $|E| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|E| = \frac{n^2 - n}{2}$ and the cost is \textbf{O}($n^2$)
 \subsection*{Second problem}
 
 \subsubsection*{Solution}
-
+\textbf{Hint}: Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cuts, we use this structures to solve the problem. \\
 \newpage
 
 \section*{Exercise 3}
