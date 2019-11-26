@@ -29,6 +29,8 @@
 
 \section*{Exercise 1}
 \subsection*{Problem}
+Given as input the number of boxes $k$, the number of different rewards $n$ as well as
+the cost $c_i$ (which is guaranteed to be integer) of every box, design an algorithm to find the expected optimal reward.
 \subsubsection*{Solution}
 Let's define a matrix M ($k \times n$), in which we have the expected value opening the $i^{th}$ box having $j$ as current best reward ($i \in [0, k-1]$, $j \in [0, n]$)
 \begin{algorithm}
@@ -36,12 +38,12 @@ Let's define a matrix M ($k \times n$), in which we have the expected value open
 	\begin{algorithmic}[1]
 		\For{$i$ in $(0, ..., k-1)$}
 		\For{$j$ in $(0, ..., n)$}
-		\State $M[i,j] \gets -\sum\limits_{h=1}^i c_h + \frac{j}{n+1}(j-1) + \frac{1}{n+1}\sum\limits_{h=j}^n h$
+		\State $M[i,j] \gets -\sum\limits_{h=1}^i c[h] + \frac{j}{n+1}(j-1) + \frac{1}{n+1}\sum\limits_{h=j}^n h$
 		\EndFor		
 		\EndFor
 	\end{algorithmic}
 \end{algorithm}\\
-Now, for each box we can calculate the "\textit{a priori}" expected value as follow: \\ \\
+Now, for each box we can calculate the expected value as follow: \\ \\
 $\mathbf{\bar{v_k} = \sum\limits_{i=0}^n P_{k-1}(i)v_k(i)}$ \\ \\
 where $\mathbf{P_{k-1}(i)}$ is the probability of having reward i at least in one of the $\mathit{k-1}$ boxes, while $\mathbf{v_k(i)}$ is the expected value opening the $\mathit{k^{th}}$ box having as current best reward $\mathit{i}$. \\ \\
 $\mathbf{P_{k-1}(i) = (\frac{1}{n+1})(\frac{i+1}{n+1})^{k-2}(k-1)}$, \qquad $\mathbf{v_k(i) = M[k,i]}$ \\ \\
