@@ -6,20 +6,24 @@ k = 3
 
 M = np.zeros((k,n+1))
 
-costs = [1 for i in range(k)]
-costs = [0.25, 0.5, 0]
+c = [1 for i in range(k)]
+c = [0.25, 0.5, 0]
 
 for i in range(k-1, -1, -1):
-    expected = 0
-    for j in range(0, n+1):
-        expected = 0
-        for x in range(0, n+1):
-            v_max = max(j, x)
-            if i == k-1:
-                expected += v_max/(n+1)
-            else:
-                expected += (M[i+1][v_max])/(n+1)
-        expected -= costs[i]
-        M[i][j] = max(j, expected)
+    for j in range(n, -1, -1):
+        r = 0
+        mysum = 0
+        if i == k-1:
+            r += j*(j+1)/(n+1)
+            for x in range(j+1, n+1):
+                mysum += x
+            r += mysum/(n+1)
+        else:
+            r += M[i+1, j]*(j+1)/(n+1)
+            for x in range(j+1, n+1):
+                mysum += M[i+1, x]
+            r += mysum/(n+1)
+        r -= c[i]
+        M[i][j] = max(j, r)
 
 print("Optimal expected value: " + str(M[0][0]))

@@ -39,25 +39,44 @@
 Given as input the number of boxes $k$, the number of different rewards $n$ as well as
 the cost $c_i$ (which is guaranteed to be integer) of every box, design an algorithm to find the expected optimal reward.
 \subsubsection*{Solution}
-\begin{algorithm}
-	\caption{Get optimal expected value}\label{euclid}
+\begin{algorithm}[H]
+	\centering
+	\caption{Get optimal expected value (\textbf{\textit{O}}($n^2 \times k$))}\label{euclid}
 	\begin{algorithmic}[1]
-		\State $M[k, n+1] \gets 0$
-		\State $c[k] \gets 0$
-		\State $a[n+1] \gets 0$
+		\State $M \gets matrix(k, n+1)$
 		\For{$i$ in $(k-1, ..., 0)$}
 		\For{$j$ in $(n+1, ..., 0)$}
-		\State $nv \gets 0$
+		\State $r \gets 0$
 		\If{$i = k-1$}
-			\State $nv \gets j \times \frac{j+1}{n+1} + \frac{1}{n+1} \times \frac{n \times (n+1)-j \times (j+1)}{2}) - c[i]$
+		\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1}\sum\limits_{h = j + 1}^n{h} - c[i]$
 		\Else
-			\State $nv \gets M[i+1, j] \times \frac{j+1}{n+1} + \frac{1}{n+1} \times a[j] - c[i]$
+		\State $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{1}{n+1}\sum\limits_{h = j + 1}^n{M[i+1, h]} - c[i]$
 		\EndIf
-		\State $M[i, j] \gets \max(j, nv)$
+		\State $M[i, j] \gets \max(j, r)$
+		\EndFor		
+		\EndFor
+		\State \Return $M[0, 0]$
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[H]
+	\centering
+	\caption{Get optimal expected value (\textbf{\textit{O}}($n \times k$))}\label{euclid}
+	\begin{algorithmic}[1]
+		\State $M \gets matrix(k, n+1)$
+		\State $a \gets vector(n+1)$
+		\For{$i$ in $(k-1, ..., 0)$}
+		\For{$j$ in $(n+1, ..., 0)$}
+		\State $r \gets 0$
+		\If{$i = k-1$}
+			\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot \frac{n \cdot (n+1)-j \cdot (j+1)}{2} - c[i]$
+		\Else
+			\State $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot a[j] - c[i]$
+		\EndIf
+		\State $M[i, j] \gets \max(j, r)$
 		\If{$j = n$}
 			\State $a[j] \gets 0$
 		\Else
-			\State $a[j] \gets a[j+1] + matrix[i, j+1]$
+			\State $a[j] \gets a[j+1] + M[i, j+1]$
 		\EndIf
 		\EndFor		
 		\EndFor
