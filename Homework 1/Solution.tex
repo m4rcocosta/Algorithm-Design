@@ -137,24 +137,37 @@ example, e.g. for $|F|$ = 4.
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
 \node(f) at (0,0) {F};
-\node(a) at (5.5,1) {f$_a$};
-\node(b) at (5.5,-1) {f$_b$};
-\node(c) at (11,1) {f$_c$};
-\node(d) at (11,-1) {f$_d$};
+\node(ma) at (3,1) {m$_a$};
+\node(a) at (6.5,1) {f$_a$};
+\node(mb) at (3,-1) {m$_b$};
+\node(b) at (6.5,-1) {f$_b$};
+\node(mc) at (9.5,1) {m$_c$};
+\node(c) at (13,1) {f$_c$};
+\node(md) at (9.5,-1) {m$_d$};
+\node(d) at (13,-1) {f$_d$};
 \node(s) at (16,0) {s};
 \end{scope}
 \begin{scope}[every edge/.style={draw=black,very thick}]
-\path [->] (f) edge node[sloped,above]{$n_a$} (a);
-\path [->] (f) edge node[sloped,above]{$n_b$} (b);
+\path [->] (f) edge node[sloped,above]{$n_1$} (ma);
+\path [->] (f) edge node[sloped,above]{$n_2$} (mb);
 
-\path [->] (a) edge node[sloped,above]{$n_a - s_a$} (c);
-\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (c);
-\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (d);
+\path [->] (a) edge node[sloped,below]{$n_a - s_a$} (mc);
+\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (md);
+\path [->] (c) edge[bend right=20] node[sloped,above]{$n_c - s_c$} (ma);
+\path [->] (d) edge[bend left=20] node[sloped,below]{$n_d - s_d$} (mb);
 
-\path [->] (a) edge[left] node{$n_a - s_a$} (b);
-\path [->] (d) edge[right] node{$n_d - s_d$} (c);
+\path [->] (a) edge[sloped,above,pos=0.75] node{$n_a - s_a$} (mb);
+\path [->] (d) edge[sloped,above,pos=0.2] node{$n_d - s_d$} (mc);
+\path [->] (b) edge[sloped,above,pos=0.2] node{$n_b - s_b$} (ma);
+\path [->] (c) edge[sloped,above,pos=0.75] node{$n_c - s_c$} (md);
 
-\path [->] (a) edge[bend left=25] node[sloped,above]{$s_a$} (s);
+\path [->] (ma) edge node[sloped,above]{$n_a$}(a);
+\path [->] (mb) edge node[sloped,above]{$n_b$}(b);
+\path [->] (mc) edge node[sloped,above]{$n_c$}(c);
+\path [->] (md) edge node[sloped,above]{$n_d$}(d);
+
+\path [->] (a) edge[bend left=30] node[sloped,above]{$s_a$} (s);
+\path [->] (b) edge[bend right=30] node[sloped,below]{$s_b$} (s);
 \path [->] (c) edge node[sloped,above]{$s_c$} (s);
 \path [->] (d) edge node[sloped,above]{$s_d$} (s);
 \end{scope}
@@ -164,29 +177,42 @@ example, e.g. for $|F|$ = 4.
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
 	\node(f) at (0,0) {F};
-	\node(a) at (4,1) {f$_a$};
-	\node(b) at (4,-1) {f$_b$};
-	\node(c) at (8,1) {f$_c$};
-	\node(d) at (8,-1) {f$_d$};
-	\node(b1) at (12,2) {$b_1$};
-	\node(b2) at (12,0) {$b_2$};
-	\node(b3) at (12,-2) {$b_3$};
+	\node(ma) at (2,1) {m$_a$};
+	\node(a) at (5.8,1) {f$_a$};
+	\node(mb) at (2,-1) {m$_b$};
+	\node(b) at (5.8,-1) {f$_b$};
+	\node(mc) at (8.2,1) {m$_c$};
+	\node(c) at (12,1) {f$_c$};
+	\node(md) at (8.2,-1) {m$_d$};
+	\node(d) at (12,-1) {f$_d$};
+	\node(b1) at (14,2) {$b_1$};
+	\node(b2) at (14,0) {$b_2$};
+	\node(b3) at (14,-2) {$b_3$};
 	\node(s) at (16,0) {s};
 \end{scope}
 \begin{scope}[every edge/.style={draw=black,very thick}]
-	\path [->] (f) edge node[sloped,above]{$n_a$} (a);
-	\path [->] (f) edge node[sloped,above]{$n_b$} (b);
+	\path [->] (f) edge node[sloped,above]{$n_1$} (ma);
+	\path [->] (f) edge node[sloped,above]{$n_2$} (mb);
 	
-	\path [->] (a) edge node[pos=0.6,sloped,above]{$n_a - s_a$} (c);
-	\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (c);
-	\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (d);
+	\path [->] (a) edge node[sloped,below]{$n_a - s_a$} (mc);
+	\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (md);
+	\path [->] (c) edge[bend right=20] node[sloped,above]{$n_c - s_c$} (ma);
+	\path [->] (d) edge[bend left=20] node[sloped,below]{$n_d - s_d$} (mb);
 	
-	\path [->] (a) edge[left] node{$n_a - s_a$} (b);
-	\path [->] (d) edge[right] node{$n_d - s_d$} (c);
+	\path [->] (a) edge[sloped,above,pos=0.75] node{$n_a - s_a$} (mb);
+	\path [->] (d) edge[sloped,above,pos=0.2] node{$n_d - s_d$} (mc);
+	\path [->] (b) edge[sloped,above,pos=0.2] node{$n_b - s_b$} (ma);
+	\path [->] (c) edge[sloped,above,pos=0.75] node{$n_c - s_c$} (md);
+	
+	\path [->] (ma) edge node[sloped,above]{$n_a$}(a);
+	\path [->] (mb) edge node[sloped,above]{$n_b$}(b);
+	\path [->] (mc) edge node[sloped,above]{$n_c$}(c);
+	\path [->] (md) edge node[sloped,above]{$n_d$}(d);
 	
 	\path [->] (a) edge[bend left=10] node[sloped,above]{$s_a$} (b1);
-	\path [->] (c) edge node[sloped,above]{$s_c$} (b2);
-	\path [->] (d) edge node[sloped,above]{$s_d$} (b3);
+	\path [->] (b) edge[bend right=10] node[sloped,below]{$s_b$} (b3);
+	\path [->] (c) edge node[sloped,above]{$s_c$} (b1);
+	\path [->] (d) edge node[sloped,above]{$s_d$} (b2);
 	
 	\path [->] (b1) edge node[sloped,above]{$c_1$} (s);
 	\path [->] (b2) edge node[sloped,above]{$c_2$} (s);
