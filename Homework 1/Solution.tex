@@ -42,6 +42,10 @@ The problem consists in finding the expected optimal reward playing the game ``\
 \subsubsection*{Solution}
 In order to solve the problem, we can define a matrix \textit{M} composed of $k$ rows and $n$ columns, where the element $M[i, j]$ represents the expected value by opening the box i and having already as maximum prize j. \\
 To populate the matrix we can use \textbf{backward induction}, proceeding first considering the last box and choosing what to do for all the possible prizes. Using this information, we can then determine what to do at the penultimate box. This process continues backwards until we have determined the best action for every possible prize for each box. So the element $\mathbf{M[0, 0]}$ is the expected optimal reward.\\
+Let's explain the mathematical formula: \\
+- $j \cdot \frac{j+1}{n+1}$ (or $M[i+1, j] \cdot \frac{j+1}{n+1}$) is the probability of obtaining a reward $r \le j$; \\
+- $\frac{1}{n+1}\sum\limits_{h = j + 1}^n{h}$ (or $\frac{1}{n+1}\sum\limits_{h = j + 1}^n{M[i+1, j]}$) is the probability of obtaining a reward $r > j$; \\
+- $c[i]$ is the cost to pay opening the $i^{th}$ box. \\
 To improve the complexity to \textbf{\textit{O}}($n \cdot k$) we can eliminate the summations, since in the worst case we have a sum over $n$ (\textbf{\textit{O}}($n$)) in nested cycles (\textbf{\textit{O}}($n \cdot k$)) having a total cost of\textbf{\textit{O}}($n^2 \cdot k$). To do this we must distinguish the two cases:
 \begin{itemize}
 	\item \textbf{\textit{Last box}}: we can remove this summation using a mathematical trick: \\
@@ -261,7 +265,19 @@ The problem consists in showing that it is not possible to solve the problem of 
 In order to prove that this problem is not solvable with quick algorithm we need to prove that this problem is \textbf{\textit{NP-Hard}}. We can do it reducing another \textit{NP-Hard} problem to the current problem. Let's define our problem as $\Theta$, we need to find a well known \textit{NP-Hard} problem $\Omega$ such that:
 \begin{itemize}
 	\item $\omega \in \Omega \implies  \theta \in \Theta$
-	\item $\theta \in \Theta\implies  \omega \in \Omega$ (or equivalently $\neg\omega \in \Omega \implies  \neg\theta \in \Theta$)
+	\item $\theta \in \Theta \implies  \omega \in \Omega$ (or equivalently $\neg\omega \in \Omega \implies  \neg\theta \in \Theta$)
 \end{itemize}
+\textbf{\underline{Observation}}: The earliest start time  $s_j$ indicate only at what time the job $j$ is available (it does not need to be done at that moment, but it does have to be done before its deadline $d_j$). \\ \\
+\textbf{\underline{Observation}}: Our scheduling problem is solvable if and only if each job $j$ meets its deadline $d_j$ and $\sum\limits_{j \in J}l_j \le k$. \\
+We can use \textbf{\textit{Subset Sum}} for our scope ($\Omega$ = \textit{Subset Sum}). \\
+\textbf{Subset sum}: Given a set of positive integers and an integer $k$, is there any non-empty subset whose sum to $s$.
+\begin{enumerate}
+	\item Prove that $\omega \in \Omega \implies  \theta \in \Theta$: \\
+	Let's suppose we start with a solvable instance of \textit{Subset Sum} Problem. Given $X = \{x_1, ..., x_n\}$ a set of positive integers to which there is a subset $X'$ such that its elements add up to $k$ and the sum of the whole set is $\lambda$ ($\sum\limits_{x_i \in X'}x_i = k$ and $\sum\limits_{x_i \in X}x_i = \lambda$). Let's define jobs $\{j_1, ..., j_n\}$ such that $s_i$, $l_i = x_i$ and $d_i = t+1$ for every $j_i$ (earliest start time, duration of the job and deadline respectively). This instance solves the scheduling problem because it's possible to arrange the jobs in any order and they will always meet their deadline.
+		
+	\item Prove that $\theta \in \Theta \implies  \omega \in \Omega$: \\
+	Let's suppose we start with a solvable instance of our \textit{Scheduling} problem. Given the set of jobs $\{j_1, ..., j_n, j_{n+1}\}$ where the first $n$ jobs are defined the same as before and job $j_{n+1}$ having $s_{n+1} = k$, $l_{n+1} = 1$ and $d_{n+1} = k+1$. The extra job must be done in $[k, k+1]$, but there would still be $\lambda$ units of time available in the time interval $[0, \lambda+1]$. Since this instance is solvable, we have $|X'|$ processes that can be executed before job $j_{n+1}$ and another sequence of jobs after. The set $|X'|$ solves the \textit{Subset Sum} problem.
+\end{enumerate}
+We proved that our scheduling problem is \textit{NP-Hard}, so we can say that it is not solvable with a quick algorithm.
 
 \end{document}
