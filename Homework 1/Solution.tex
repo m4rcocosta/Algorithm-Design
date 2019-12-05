@@ -256,7 +256,12 @@ Adjust the network knowing that each friend will have an associated building $b_
 
 \section*{Exercise 4}
 \subsection*{Problem}
-The problem consists in showing that it is not possible to solve the problem of scheduling $n$ tasks quickly. Each job  $j$ of the $n$ jobs has an earliest time $s_j$ to start task, a deadline $d_j$ when it has to be finished, and the length $l_j \in \mathbb{N}$ that specifies the time needed to complete it. There is also an upper bound time $k$ and $\sum\limits_{j \in J}l_j \le k$
+The problem consists in showing that it is not possible to solve the problem of scheduling $n$ tasks with quick algorithm. Each job  $j$ of the $n$ jobs has an earliest time $s_j$ to start task, a deadline $d_j$ when it has to be finished, and the length $l_j \in \mathbb{N}$ that specifies the time needed to complete it. There is also an upper bound time $k$ and $\sum\limits_{j \in J}l_j \le k$.
 \subsubsection*{Solution}
+In order to prove that this problem is not solvable with quick algorithm we need to prove that this problem is \textbf{\textit{NP-Hard}}. We can do it reducing another \textit{NP-Hard} problem to the current problem. Let's define our problem as $\Theta$, we need to find a well known \textit{NP-Hard} problem $\Omega$ such that:
+\begin{itemize}
+	\item $\omega \in \Omega \implies  \theta \in \Theta$
+	\item $\theta \in \Theta\implies  \omega \in \Omega$ (or equivalently $\neg\omega \in \Omega \implies  \neg\theta \in \Theta$)
+\end{itemize}
 
 \end{document}
