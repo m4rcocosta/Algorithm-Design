@@ -6,6 +6,7 @@
 \usepackage{fancyhdr}
 \usepackage{lineno}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage {tikz}
@@ -37,8 +38,7 @@
 
 \section*{Exercise 1}
 \subsection*{Problem}
-Given as input the number of boxes $k$, the number of different rewards $n$ as well as
-the cost $c_i$ (which is guaranteed to be integer) of every box, design an algorithm to find the expected optimal reward.
+The problem consists in finding the expected optimal reward playing the game ``\textit{Open the Boxes and keep the Best!}''. The input is composed by the number of boxes $k$, the number of different rewards $n$ anthe cost $c_i$ of every box. Two algorithms are required. The first one's complexity must be \textbf{\textit{O}}($n^2 \cdot k$), while the second one's complexity must be \textbf{\textit{O}}($n \cdot k$)
 \subsubsection*{Solution}
 In order to solve the problem, we can define a matrix \textit{M} composed of $k$ rows and $n$ columns, where the element $M[i, j]$ represents the expected value by opening the box i and having already as maximum prize j. \\
 To populate the matrix we can use \textbf{backward induction}, proceeding first considering the last box and choosing what to do for all the possible prizes. Using this information, we can then determine what to do at the penultimate box. This process continues backwards until we have determined the best action for every possible prize for each box. So the element $\mathbf{M[0, 0]}$ is the expected optimal reward.\\
@@ -104,19 +104,19 @@ Here there are the two \textbf{\textit{Algorithms}}:
 
 \section*{Exercise 2}
 \subsection*{First problem}
-Find the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}.
+The problem is to the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}. Algorithm's run time must be polynomial in $n$.
 \subsubsection*{Solution}
 Insert edges that are not in the tree so as to obtain the complete graph. These edges must have a greater weight than those of the tree, so that \textbf{\textit{T}} is the only \textbf{\textit{MST}} of \textbf{\textit{G}}. Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cuts, we use this structures to solve the problem. \\
 Let's define with \textbf{\textit{V}} the set of nodes of \textbf{\textit{T}} and with \textbf{\textit{E}} the set of edges of \textbf{\textit{T}}.
 \begin{algorithm}
 	\caption{Find complete graph}\label{euclid}
 	\begin{algorithmic}[1]
-		\For{$v \in V$}
+		\For{$v \in V$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n$))
 			\State $v.initializeUnionFindSingleton()$
 		\EndFor
 		\State $T.sortEdgesByAscendingWeights()$ \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n\log{n}$))
 		\State $G \gets \emptyset$
-		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n^2$))
+		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n^3$))
 			\State  $G.addEdge(e)$
 			\State  $set_1 \gets v_1.findComponents()$
 			\State  $set_2 \gets v_2.findComponents()$
@@ -134,20 +134,20 @@ Let's define with \textbf{\textit{V}} the set of nodes of \textbf{\textit{T}} an
 		\State \Return $G$
 	\end{algorithmic}
 \end{algorithm} \\
-\textbf{Cost}: Let's define \textbf{\textit{E'}} = set of edges of the graph \textbf{\textit{G}}, the cost is \textbf{\textit{O}}($|E'| + |V|\log{|V|}$), but $|E'| = \frac{|V| \cdot (|V| - 1)}{2}$ and $|V| = n$, so $|E'| + |V|\log{|V|} = \frac{n^2 - n}{2} + n\log{n}$ and the cost is \textbf{\textit{O}}($n^2$)
+\textbf{Cost}: \textbf{\textit{O}}($|V|\log{|V|} + |E| \cdot |V|^2$) = \textbf{\textit{O}}($n\log{n} + (n-1) \cdot n^2$) = \textbf{\textit{O}}($n\log{n} + n^3 - n^2$) = \textbf{\textit{O}}($n^3$), given by the three nested cycles over $n$.
 \subsection*{Second problem}
-Find the total weight of the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}.
+Find the total weight of the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}. Algorithm's complexity must be \textbf{\textit{O}}($n \log{n}$).
 \subsubsection*{Solution}
 This problem is quite similar to the previous one, but in this case there is no need to create all the edges of the graph.
 \begin{algorithm}
 	\caption{Find weight of the complete graph}\label{euclid}
 	\begin{algorithmic}[1]
-		\For{$v \in V$}
+		\For{$v \in V$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n$))
 			\State $v.initializeUnionFindSingleton()$
 		\EndFor
 		\State $T.sortEdgesByAscendingWeights()$ \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n\log{n}$))
 		\State $w_{total} \gets 0$
-		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n$))
+		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n \log{n}$))
 			\State $w_{total}$ \textit{+=} $e.getWeight()$
 			\State  $set_1 \gets v_1.findComponents()$
 			\State  $set_2 \gets v_2.findComponents()$
@@ -157,17 +157,13 @@ This problem is quite similar to the previous one, but in this case there is no 
 		\State \Return $w_{total}$
 	\end{algorithmic}
 \end{algorithm} \\
-\textbf{Cost}: \textbf{\textit{O}}($|V|\log{|V|} + |E|$) = \textbf{\textit{O}}($n\log{n} + (n-1)$) = \textbf{\textit{O}}($n\log{n}$), given by ordering the edges.
+\textbf{Cost}: \textbf{\textit{O}}($|V|\log{|V|} + |E| \log{|V|}$) = \textbf{\textit{O}}($n\log{n} + n\log{n}$) = \textbf{\textit{O}}($n\log{n}$) (\textit{union} costs \textbf{\textit{O}}($\log{n}$)).
 \newpage
 
 \section*{Exercise 3}
 \subsection*{First Problem}
-Model the problem as a flow problem in a graph G, only consisting of regular vertices, one
-source, one sink, and capacitated edges to find out how many chocolates Federico should
-actually make every week. Give a formal definition of your network, and also draw a small
-example, e.g. for $|F|$ = 4.
+The problem consists in modeling Federico's business as a flow problem in a graph \textbf{\textit{G}}, only consisting of regular vertices, one source, one sink, and capacitated edges to find out how many chocolates he should make every week. An example with $|F| = 4$ is required.
 \subsubsection*{Solution}
-
 \textbf{Example}:
 
 \begin {tikzpicture}
@@ -209,6 +205,7 @@ example, e.g. for $|F|$ = 4.
 \end{scope}
 \end{tikzpicture}
 \subsection*{Second Problem}
+Adjust the network knowing that each friend will have an associated building $b_f \in B$ and find out if and how thisimpacts Federico’s business.
 \subsubsection*{Solution}
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
@@ -259,8 +256,7 @@ example, e.g. for $|F|$ = 4.
 
 \section*{Exercise 4}
 \subsection*{Problem}
-
+The problem consists in showing that it is not possible to solve the problem of scheduling $n$ tasks quickly. Each job  $j$ of the $n$ jobs has an earliest time $s_j$ to start task, a deadline $d_j$ when it has to be finished, and the length $l_j \in \mathbb{N}$ that specifies the time needed to complete it. There is also an upper bound time $k$ and $\sum\limits_{j \in J}l_j \le k$
 \subsubsection*{Solution}
-In order to prove that this problem is \textbf{NP-HARD}, we need to find a well-know \textbf{NP-HARD} algorithm s.t. $\alpha \le_p EX4$. We can do it with the \textbf{SUBSET SUM} problem. We can use a reduction from the problem above: given a set of integers $S = {x_1, x_2, ..., x_n}$ and a target integer $\gamma$, there exists a subset $S' \in S$ s.t. $\sum\limits_{x_i \in S'}x_i = K$
-So, we construct an instance of the EX4 problem with n jobs, each having earliest start time $0$ (so $s_j = 0$ for all $j \in S'$). For $j \in J$, job $j$ has length $l_j = x_j$ and deadline $d_j = \gamma$. This instance solves the scheduling problem because we can arrange the jobs in any order and they will always meet their deadline. Now we need to prove
+
 \end{document}
