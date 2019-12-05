@@ -12,6 +12,7 @@
 \usetikzlibrary {positioning}
 \usepackage {xcolor}
 \usepackage{titlesec}
+\usepackage{varwidth}
 
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
@@ -39,18 +40,31 @@
 Given as input the number of boxes $k$, the number of different rewards $n$ as well as
 the cost $c_i$ (which is guaranteed to be integer) of every box, design an algorithm to find the expected optimal reward.
 \subsubsection*{Solution}
+In order to solve the problem, we can define a matrix \textit{M} composed of $k$ rows and $n$ columns, where the element $M[i, j]$ represents the expected value by opening the box i and having already as maximum prize j. \\
+To populate the matrix we can use \textbf{backward induction}, proceeding first considering the last box and choosing what to do for all the possible prizes. Using this information, we can then determine what to do at the penultimate box. This process continues backwards until we have determined the best action for every possible prize for each box. So the element $\mathbf{M[0, 0]}$ is the expected optimal reward.\\
+To improve the complexity to \textbf{\textit{O}}($n \cdot k$) we can eliminate the summations, since in the worst case we have a sum over $n$ (\textbf{\textit{O}}($n$)) in nested cycles (\textbf{\textit{O}}($n \cdot k$)) having a total cost of\textbf{\textit{O}}($n^2 \cdot k$). To do this we must distinguish the two cases:
+\begin{itemize}
+	\item \textbf{\textit{Last box}}: we can remove this summation using a mathematical trick: \\
+	$\sum\limits_{i = j + 1}^n{i} = \sum\limits_{i = 0}^n{i} - \sum\limits_{i = 0}^j{i} = \frac{n \cdot (n+1)}{2} - \frac{j \cdot (j+1)}{2} = \frac{n \cdot (n+1) - j \cdot (j+1)}{2}$;
+	\item \textbf{\textit{Other boxes}}: we can use an auxiliary vector in which we keep track of the sum of the elements of the matrix related to the box next to the current one.
+\end{itemize}
+
+Here there are the two \textbf{\textit{Algorithms}}:
+
+\begin{minipage}[t]{0.49\textwidth}
 \begin{algorithm}[H]
-	\centering
-	\caption{Get optimal expected value (\textbf{\textit{O}}($n^2 \times k$))}\label{euclid}
+	\caption{Get optimal expected value (\textbf{\textit{O}}($n^2 \cdot k$))}\label{euclid}
 	\begin{algorithmic}[1]
-		\State $M \gets matrix(k, n+1)$
+		\State $M[k, n+1] \gets 0$
 		\For{$i$ in $(k-1, ..., 0)$}
 		\For{$j$ in $(n+1, ..., 0)$}
 		\State $r \gets 0$
 		\If{$i = k-1$}
 		\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1}\sum\limits_{h = j + 1}^n{h} - c[i]$
 		\Else
-		\State $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{1}{n+1}\sum\limits_{h = j + 1}^n{M[i+1, h]} - c[i]$
+		\State \begin{varwidth}[t]{\linewidth} $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot$ \par
+			\hskip\algorithmicindent $\sum\limits_{h = j + 1}^n{M[i+1, h]} - c[i]$
+		\end{varwidth}
 		\EndIf
 		\State $M[i, j] \gets \max(j, r)$
 		\EndFor		
@@ -58,31 +72,34 @@ the cost $c_i$ (which is guaranteed to be integer) of every box, design an algor
 		\State \Return $M[0, 0]$
 	\end{algorithmic}
 \end{algorithm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\textwidth}
 \begin{algorithm}[H]
-	\centering
-	\caption{Get optimal expected value (\textbf{\textit{O}}($n \times k$))}\label{euclid}
+	\caption{Get optimal expected value (\textbf{\textit{O}}($n \cdot k$))}\label{euclid}
 	\begin{algorithmic}[1]
-		\State $M \gets matrix(k, n+1)$
-		\State $a \gets vector(n+1)$
+		\State $M[k, n+1] \gets 0$
+		\State $sums[n+1] \gets 0$
 		\For{$i$ in $(k-1, ..., 0)$}
 		\For{$j$ in $(n+1, ..., 0)$}
 		\State $r \gets 0$
 		\If{$i = k-1$}
 			\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot \frac{n \cdot (n+1)-j \cdot (j+1)}{2} - c[i]$
 		\Else
-			\State $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot a[j] - c[i]$
+			\State $r \gets M[i+1, j] \cdot \frac{j+1}{n+1} + \frac{sums[j]}{n+1} - c[i]$
 		\EndIf
 		\State $M[i, j] \gets \max(j, r)$
 		\If{$j = n$}
-			\State $a[j] \gets 0$
+			\State $sums[j] \gets 0$
 		\Else
-			\State $a[j] \gets a[j+1] + M[i, j+1]$
+			\State $sums[j] \gets sums[j+1] + M[i, j+1]$
 		\EndIf
 		\EndFor		
 		\EndFor
 		\State \Return $M[0, 0]$
 	\end{algorithmic}
 \end{algorithm}
+\end{minipage}
 \newpage
 
 \section*{Exercise 2}
@@ -117,7 +134,7 @@ Let's define with \textbf{\textit{V}} the set of nodes of \textbf{\textit{T}} an
 		\State \Return $G$
 	\end{algorithmic}
 \end{algorithm} \\
-\textbf{Cost}: Let's define \textbf{\textit{E'}} = set of edges of the graph \textbf{\textit{G}}, the cost is \textbf{\textit{O}}($|E'| + |V|\log{|V|}$), but $|E'| = \frac{|V|(|V| - 1)}{2}$ and $|V| = n$, so $|E'| + |V|\log{|V|} = \frac{n^2 - n}{2} + n\log{n}$ and the cost is \textbf{\textit{O}}($n^2$)
+\textbf{Cost}: Let's define \textbf{\textit{E'}} = set of edges of the graph \textbf{\textit{G}}, the cost is \textbf{\textit{O}}($|E'| + |V|\log{|V|}$), but $|E'| = \frac{|V| \cdot (|V| - 1)}{2}$ and $|V| = n$, so $|E'| + |V|\log{|V|} = \frac{n^2 - n}{2} + n\log{n}$ and the cost is \textbf{\textit{O}}($n^2$)
 \subsection*{Second problem}
 Find the total weight of the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}.
 \subsubsection*{Solution}
