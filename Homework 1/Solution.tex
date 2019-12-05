@@ -40,12 +40,13 @@
 \subsection*{Problem}
 The problem consists in finding the expected optimal reward playing the game ``\textit{Open the Boxes and keep the Best!}''. The input is composed by the number of boxes $k$, the number of different rewards $n$ anthe cost $c_i$ of every box. Two algorithms are required. The first one's complexity must be \textbf{\textit{O}}($n^2 \cdot k$), while the second one's complexity must be \textbf{\textit{O}}($n \cdot k$)
 \subsubsection*{Solution}
-In order to solve the problem, we can define a matrix \textit{M} composed of $k$ rows and $n$ columns, where the element $M[i, j]$ represents the expected value by opening the box i and having already as maximum prize j. \\
-To populate the matrix we can use \textbf{backward induction}, proceeding first considering the last box and choosing what to do for all the possible prizes. Using this information, we can then determine what to do at the penultimate box. This process continues backwards until we have determined the best action for every possible prize for each box. So the element $\mathbf{M[0, 0]}$ is the expected optimal reward.\\
+In order to solve the problem, we can define a matrix \textit{M} composed of $k$ rows and $n$ columns, where the element $M[i, j]$ represents the expected value by opening the box i and having as current maximum reward j. \\
+To populate the matrix we can use \textbf{backward induction}, proceeding first considering the last box and choosing what to do for all the possible rewards. Using this information, we can then determine what to do at the penultimate box. This process continues backwards until we have determined the best action for every possible reward for each box. So the element $\mathbf{M[0, 0]}$ is the expected optimal reward.\\
 Let's explain the mathematical formula: \\
 - $j \cdot \frac{j+1}{n+1}$ (or $M[i+1, j] \cdot \frac{j+1}{n+1}$) is the probability of obtaining a reward $r \le j$; \\
 - $\frac{1}{n+1}\sum\limits_{h = j + 1}^n{h}$ (or $\frac{1}{n+1}\sum\limits_{h = j + 1}^n{M[i+1, j]}$) is the probability of obtaining a reward $r > j$; \\
 - $c[i]$ is the cost to pay opening the $i^{th}$ box. \\
+- the sum of the previous values is the expected value opening the box $i$ having as current maximum reward $j$ \\
 To improve the complexity to \textbf{\textit{O}}($n \cdot k$) we can eliminate the summations, since in the worst case we have a sum over $n$ (\textbf{\textit{O}}($n$)) in nested cycles (\textbf{\textit{O}}($n \cdot k$)) having a total cost of\textbf{\textit{O}}($n^2 \cdot k$). To do this we must distinguish the two cases:
 \begin{itemize}
 	\item \textbf{\textit{Last box}}: we can remove this summation using a mathematical trick: \\
@@ -61,7 +62,7 @@ Here there are the two \textbf{\textit{Algorithms}}:
 	\begin{algorithmic}[1]
 		\State $M[k, n+1] \gets 0$
 		\For{$i$ in $(k-1, ..., 0)$}
-		\For{$j$ in $(n+1, ..., 0)$}
+		\For{$j$ in $(n, ..., 0)$}
 		\State $r \gets 0$
 		\If{$i = k-1$}
 		\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1}\sum\limits_{h = j + 1}^n{h} - c[i]$
@@ -85,7 +86,7 @@ Here there are the two \textbf{\textit{Algorithms}}:
 		\State $M[k, n+1] \gets 0$
 		\State $sums[n+1] \gets 0$
 		\For{$i$ in $(k-1, ..., 0)$}
-		\For{$j$ in $(n+1, ..., 0)$}
+		\For{$j$ in $(n, ..., 0)$}
 		\State $r \gets 0$
 		\If{$i = k-1$}
 			\State $r \gets j \cdot \frac{j+1}{n+1} + \frac{1}{n+1} \cdot \frac{n \cdot (n+1)-j \cdot (j+1)}{2} - c[i]$
@@ -108,7 +109,7 @@ Here there are the two \textbf{\textit{Algorithms}}:
 
 \section*{Exercise 2}
 \subsection*{First problem}
-The problem is to the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}. Algorithm's run time must be polynomial in $n$.
+The problem is to find the complete graph \textbf{\textit{G}} of minimum weight given a weighted tree \textbf{\textit{T}}, such that  \textbf{\textit{T}} is the unique minimum spanning tree of \textbf{\textit{G}}. Algorithm's run time must be polynomial in $n$.
 \subsubsection*{Solution}
 Insert edges that are not in the tree so as to obtain the complete graph. These edges must have a greater weight than those of the tree, so that \textbf{\textit{T}} is the only \textbf{\textit{MST}} of \textbf{\textit{G}}. Since \textit{Kruskal}'s algorithm uses the \textit{Union-Find} structures for representing the cuts, we use this structures to solve the problem. \\
 Let's define with \textbf{\textit{V}} the set of nodes of \textbf{\textit{T}} and with \textbf{\textit{E}} the set of edges of \textbf{\textit{T}}.
@@ -120,14 +121,14 @@ Let's define with \textbf{\textit{V}} the set of nodes of \textbf{\textit{T}} an
 		\EndFor
 		\State $T.sortEdgesByAscendingWeights()$ \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n\log{n}$))
 		\State $G \gets \emptyset$
-		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n^3$))
+		\For {$e \gets (u, v) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n^3$))
 			\State  $G.addEdge(e)$
-			\State  $set_1 \gets v_1.findComponents()$
-			\State  $set_2 \gets v_2.findComponents()$
+			\State  $set_1 \gets u.findComponents()$
+			\State  $set_2 \gets v.findComponents()$
 			\For {$u \in set_1$}
 				\For {$v \in set_2$}
 					\State $\hat{e} \gets (u, v)$
-					\If {$\hat{e} \notin E$}
+					\If {$\hat{e} \notin G$}
 						\State $\hat{e}.setWeight(e.getWeight() + 1)$
 						\State $G.addEdge(\hat{e})$
 					\EndIf
@@ -151,10 +152,10 @@ This problem is quite similar to the previous one, but in this case there is no 
 		\EndFor
 		\State $T.sortEdgesByAscendingWeights()$ \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n\log{n}$))
 		\State $w_{total} \gets 0$
-		\For {$e \gets (v_1, v_2) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n \log{n}$))
+		\For {$e \gets (u, v) \in E$} \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (\textbf{\textit{O}}($n \log{n}$))
 			\State $w_{total}$ \textit{+=} $e.getWeight()$
-			\State  $set_1 \gets v_1.findComponents()$
-			\State  $set_2 \gets v_2.findComponents()$
+			\State  $set_1 \gets u.findComponents()$
+			\State  $set_2 \gets v.findComponents()$
 			\State $w_{total}$ \textit{+=} $(set_1.size() \times set_2.size() - 1) \times (e.getWeight() + 1)$
 			\State $union(set_1, set_2)$
 		\EndFor
@@ -168,39 +169,39 @@ This problem is quite similar to the previous one, but in this case there is no 
 \subsection*{First Problem}
 The problem consists in modeling Federico's business as a flow problem in a graph \textbf{\textit{G}}, only consisting of regular vertices, one source, one sink, and capacitated edges to find out how many chocolates he should make every week. An example with $|F| = 4$ is required.
 \subsubsection*{Solution}
-\textbf{Example}:
+The model consists in a source node \textit{F} that represents Federico, a sink node \textit{S} that represents the costumers and different nodes $f_i$ representing Federico's friends. Moreover, for each friend there is a node $w_i$ that represents the friend's ``warehouse''. These nodes help us better understand that the amount of total chocolates received by a friend is exactly $n_i$. Each friend can receive the chocolate from Federico (represented with an edge of path from Federico to the friend and capacity $n_i$) or from another friend (represented with an edge of path from the new friend to the first one and capacity $n_i - s_i$). Notice that when a friend meets another, they can exchange chocolates for each other (represented with two edges: the first one has the path from the first friend to the warehouse of the second one and capacity $n_{i1} - s_{i1}$, while the second one has the path from the second friend to the first one and capacity $n_{i2} - s_{i2}$). The chocolates sold by each friend is represented with an edge having the path from the friend to the costumers and capacity $s_i$. Notice that for each friend $s_i \le n_i$ and the total amount of chocolates sold is $\sum\limits_{i \in |F|}s_i$. It's possible to find the \textit{Maximum Flow} in order to find out how many chocolates Federico shouldactually make every week. Let's show the example with $|F| = 4$:
 
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
 \node(f) at (0,0) {F};
-\node(ma) at (3,1) {m$_a$};
+\node(wa) at (3,1) {w$_a$};
 \node(a) at (6.5,1) {f$_a$};
-\node(mb) at (3,-1) {m$_b$};
+\node(wb) at (3,-1) {w$_b$};
 \node(b) at (6.5,-1) {f$_b$};
-\node(mc) at (9.5,1) {m$_c$};
+\node(wc) at (9.5,1) {w$_c$};
 \node(c) at (13,1) {f$_c$};
-\node(md) at (9.5,-1) {m$_d$};
+\node(wd) at (9.5,-1) {w$_d$};
 \node(d) at (13,-1) {f$_d$};
 \node(s) at (16,0) {s};
 \end{scope}
-\begin{scope}[every edge/.style={draw=black,very thick}]
-\path [->] (f) edge node[sloped,above]{$n_1$} (ma);
-\path [->] (f) edge node[sloped,above]{$n_2$} (mb);
+\begin{scope}[every edge/.style={draw=black,very thick}, every node/.style={scale=0.8}]
+\path [->] (f) edge node[sloped,above]{$n_1$} (wa);
+\path [->] (f) edge node[sloped,above]{$n_2$} (wb);
 
-\path [->] (a) edge node[sloped,below]{$n_a - s_a$} (mc);
-\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (md);
-\path [->] (c) edge[bend right=20] node[sloped,above]{$n_c - s_c$} (ma);
-\path [->] (d) edge[bend left=20] node[sloped,below]{$n_d - s_d$} (mb);
+\path [->] (a) edge node[sloped,below]{$n_a - s_a$} (wc);
+\path [->] (b) edge node[sloped,above]{$n_b - s_b$} (wd);
+\path [->] (c) edge[bend right=20] node[sloped,above]{$n_c - s_c$} (wa);
+\path [->] (d) edge[bend left=20] node[sloped,below]{$n_d - s_d$} (wb);
 
-\path [->] (a) edge[sloped,above,pos=0.75] node{$n_a - s_a$} (mb);
-\path [->] (d) edge[sloped,above,pos=0.2] node{$n_d - s_d$} (mc);
-\path [->] (b) edge[sloped,above,pos=0.2] node{$n_b - s_b$} (ma);
-\path [->] (c) edge[sloped,above,pos=0.75] node{$n_c - s_c$} (md);
+\path [->] (a) edge[sloped,above,pos=0.75] node{$n_a - s_a$} (wb);
+\path [->] (d) edge[sloped,above,pos=0.2] node{$n_d - s_d$} (wc);
+\path [->] (b) edge[sloped,above,pos=0.2] node{$n_b - s_b$} (wa);
+\path [->] (c) edge[sloped,above,pos=0.75] node{$n_c - s_c$} (wd);
 
-\path [->] (ma) edge node[sloped,above]{$n_a$}(a);
-\path [->] (mb) edge node[sloped,above]{$n_b$}(b);
-\path [->] (mc) edge node[sloped,above]{$n_c$}(c);
-\path [->] (md) edge node[sloped,above]{$n_d$}(d);
+\path [->] (wa) edge node[sloped,above]{$n_a$}(a);
+\path [->] (wb) edge node[sloped,above]{$n_b$}(b);
+\path [->] (wc) edge node[sloped,above]{$n_c$}(c);
+\path [->] (wd) edge node[sloped,above]{$n_d$}(d);
 
 \path [->] (a) edge[bend left=30] node[sloped,above]{$s_a$} (s);
 \path [->] (b) edge[bend right=30] node[sloped,below]{$s_b$} (s);
@@ -211,6 +212,9 @@ The problem consists in modeling Federico's business as a flow problem in a grap
 \subsection*{Second Problem}
 Adjust the network knowing that each friend will have an associated building $b_f \in B$ and find out if and how thisimpacts Federico’s business.
 \subsubsection*{Solution}
+In this case we must modify a bit the previous model adding some new nodes $b_i$ that represent the buildings. Now each friend can sell chocolates only in his associated building, so we have the edges with capacity $s_i$ with path from the friend to his associated building, and another edge with capacity $c_i$ with path from the building to the costumers. The main difference is that now the total amount of chocolate sold is $\sum\limits_{i \in B}c_i$, and we have that $\sum\limits_{i \in |B|}c_i \le \sum\limits_{i \in |F|}s_i$. It means that Federico could make less chocolates than before because of the possible drop of sales.
+Let's show the adjusted example:
+
 \begin {tikzpicture}
 \begin{scope}[auto=left,every node/.style={circle,draw, minimum width = 1 cm}]
 	\node(f) at (0,0) {F};
@@ -227,7 +231,7 @@ Adjust the network knowing that each friend will have an associated building $b_
 	\node(b3) at (14,-2) {$b_3$};
 	\node(s) at (16,0) {s};
 \end{scope}
-\begin{scope}[every edge/.style={draw=black,very thick}]
+\begin{scope}[every edge/.style={draw=black,very thick}, every node/.style={scale=0.8}]
 	\path [->] (f) edge node[sloped,above]{$n_1$} (ma);
 	\path [->] (f) edge node[sloped,above]{$n_2$} (mb);
 	
@@ -262,21 +266,21 @@ Adjust the network knowing that each friend will have an associated building $b_
 \subsection*{Problem}
 The problem consists in showing that it is not possible to solve the problem of scheduling $n$ tasks with quick algorithm. Each job  $j$ of the $n$ jobs has an earliest time $s_j$ to start task, a deadline $d_j$ when it has to be finished, and the length $l_j \in \mathbb{N}$ that specifies the time needed to complete it. There is also an upper bound time $k$ and $\sum\limits_{j \in J}l_j \le k$.
 \subsubsection*{Solution}
-In order to prove that this problem is not solvable with quick algorithm we need to prove that this problem is \textbf{\textit{NP-Hard}}. We can do it reducing another \textit{NP-Hard} problem to the current problem. Let's define our problem as $\Theta$, we need to find a well known \textit{NP-Hard} problem $\Omega$ such that:
+In order to prove that this problem is not solvable with quick algorithm we need to prove that it is \textbf{\textit{NP-Hard}}. We can do it reducing another \textit{NP-Hard} problem to the current problem. Let's define our problem as $\Theta$, we need to find a well known \textit{NP-Hard} problem $\Omega$ such that:
 \begin{itemize}
 	\item $\omega \in \Omega \implies  \theta \in \Theta$
 	\item $\theta \in \Theta \implies  \omega \in \Omega$ (or equivalently $\neg\omega \in \Omega \implies  \neg\theta \in \Theta$)
 \end{itemize}
 \textbf{\underline{Observation}}: The earliest start time  $s_j$ indicate only at what time the job $j$ is available (it does not need to be done at that moment, but it does have to be done before its deadline $d_j$). \\ \\
-\textbf{\underline{Observation}}: Our scheduling problem is solvable if and only if each job $j$ meets its deadline $d_j$ and $\sum\limits_{j \in J}l_j \le k$. \\
-We can use \textbf{\textit{Subset Sum}} for our scope ($\Omega$ = \textit{Subset Sum}). \\
-\textbf{Subset sum}: Given a set of positive integers and an integer $k$, is there any non-empty subset whose sum to $s$.
+\textbf{\underline{Observation}}: Our scheduling problem is solvable if and only if each job $j$ meets its deadline $d_j$ and $\sum\limits_{j \in J}l_j \le k$ (we know that this last is satisfied). \\ \\
+We can use \textbf{\textit{Subset Sum}} for our purpose ($\Omega$ = \textit{Subset Sum}). \\
+\textbf{Subset sum}: Given a set of positive integers and an integer $k$, is there any non-empty subset whose sum to $k$.
 \begin{enumerate}
 	\item Prove that $\omega \in \Omega \implies  \theta \in \Theta$: \\
-	Let's suppose we start with a solvable instance of \textit{Subset Sum} Problem. Given $X = \{x_1, ..., x_n\}$ a set of positive integers to which there is a subset $X'$ such that its elements add up to $k$ and the sum of the whole set is $\lambda$ ($\sum\limits_{x_i \in X'}x_i = k$ and $\sum\limits_{x_i \in X}x_i = \lambda$). Let's define jobs $\{j_1, ..., j_n\}$ such that $s_i$, $l_i = x_i$ and $d_i = t+1$ for every $j_i$ (earliest start time, duration of the job and deadline respectively). This instance solves the scheduling problem because it's possible to arrange the jobs in any order and they will always meet their deadline.
+	Let's suppose we start with a solvable instance of \textit{Subset Sum} Problem. Given $X = \{x_1, ..., x_n\}$ a set of positive integers to which there is a subset $X'$ such that its elements add up to $k$ and the sum of the whole set is $\lambda$ ($\sum\limits_{x_i \in X'}x_i = k$ and $\sum\limits_{x_i \in X}x_i = \lambda$). Let's define jobs $\{j_1, ..., j_n\}$ such that $s_i = 0$, $l_i = x_i$ and $d_i = \lambda + 1$ for every $j_i$ (earliest start time, duration of the job and deadline respectively). This instance solves the scheduling problem because it's possible to arrange the jobs in any order and they will always meet their deadline.
 		
 	\item Prove that $\theta \in \Theta \implies  \omega \in \Omega$: \\
-	Let's suppose we start with a solvable instance of our \textit{Scheduling} problem. Given the set of jobs $\{j_1, ..., j_n, j_{n+1}\}$ where the first $n$ jobs are defined the same as before and job $j_{n+1}$ having $s_{n+1} = k$, $l_{n+1} = 1$ and $d_{n+1} = k+1$. The extra job must be done in $[k, k+1]$, but there would still be $\lambda$ units of time available in the time interval $[0, \lambda+1]$. Since this instance is solvable, we have $|X'|$ processes that can be executed before job $j_{n+1}$ and another sequence of jobs after. The set $|X'|$ solves the \textit{Subset Sum} problem.
+	Let's suppose we start with a solvable instance of our \textit{Scheduling} problem. Given the set of jobs $\{j_1, ..., j_n, j_{n+1}\}$ where the first $n$ jobs are defined the same as before and job $j_{n+1}$ having $s_{n+1} = k$, $l_{n+1} = 1$ and $d_{n+1} = k+1$. The extra job must be done in $[k, k+1]$, but there would still be $\lambda$ units of time available in the time interval $[0, \lambda+1]$. Since this instance is solvable, we have $|X'| = k$ jobs that can be executed before the job $j_{n+1}$ and the remaining $\lambda - k$ jobs after the job $j_{n+1}$. The set $X'$ solves the \textit{Subset Sum} problem.
 \end{enumerate}
 We proved that our scheduling problem is \textit{NP-Hard}, so we can say that it is not solvable with a quick algorithm.
 
