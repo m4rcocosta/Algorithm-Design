@@ -10,6 +10,7 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage {tikz}
+\usepackage{tikz-cd}
 \usetikzlibrary {positioning}
 \usepackage {xcolor}
 \usepackage{titlesec}
@@ -37,8 +38,20 @@
 \newpage
 
 \section*{Exercise 1}
-\subsection*{Problem}
-
+\subsection*{First Problem}
+We need to model Michele's problem as a integer linear problem, and relax this to a corresponding LP.
+\subsubsection*{Solution}
+The problem can be modeled as an \textit{ILP} as follow: \\
+\(\left \{ \begin{array}{l}
+minimize \quad \sum\limits_{i \in F} \sum\limits_{j \in O}x_{ij}w(i,j)\\
+s.t. \qquad \qquad \sum\limits_{j \in O}x_{ij} = 1 , \forall{i \in F}\\
+\qquad \qquad \qquad \sum\limits_{i \in F}x_{ij} \leq 1 , \forall{j \in O}\\
+\qquad \qquad \qquad x_{ij} \in{\{0,1\}}
+\end{array}
+\right. \)\\
+For the relaxation of this problem to a LP problem, we need simply to change the last condition in $x_{ij} \in [0, 1]$ ($0 \leq x_{ij} \leq 1$).
+\subsection*{Second Problem}
+Give a polynomial-time algorithm that, from anygiven optimal LP-solution, computes an optimal integer assignment, knowing that there is no \textit{integrality gap} and for every fractional LP-solution, there exists an integralfeasible solution with the same cost.
 \subsubsection*{Solution}
 
 \newpage
@@ -52,8 +65,100 @@
 
 \section*{Exercise 3}
 \subsection*{Problem}
+Given $\alpha \ge 0$ calculate Philip’s payoff at some mixed Nash equilibrium, for $\alpha < 1$ and $\alpha \ge 1$.
+\subsubsection*{Solution for $\mathbf{\alpha < 1}$}
+Let's define as $q_r$ the probability that the opponent plays R, $q_p$ the probability that the opponent plays P and $q_s = 1 - q_r - q_p$ the probability that the opponent plays S. Now we compute Philip's expected payoffs:
+\begin{itemize}
+	\item Philip's expected payoff playing R: $\alpha \cdot q_r + (\alpha - 1) \cdot q_p + (\alpha + 1) \cdot (1 - q_r - q_p)$
+	\item Philip's expected payoff playing P: $1 \cdot q_r + 0 \cdot q_p -1 \cdot (1 - q_r - q_p) = 2q_r + q_p - 1$
+	\item Philip's expected payoff playing S: $-1 \cdot q_r + 1 \cdot q_p + 0 \cdot (1 - q_r - q_p) = -q_r + q_p$
+\end{itemize}
+Since the strategy must be best responses, the payoffs must be equal, and we obtain: \\
+\begin{minipage}[t]{0.63\textwidth}
+\(\left \{ \begin{array}{l}
+\alpha \cdot q_r + (\alpha - 1) \cdot q_p + (\alpha + 1) \cdot (1 - q_r - q_p) = 2q_r + q_p - 1\\
+\alpha \cdot q_r + (\alpha - 1) \cdot q_p + (\alpha + 1) \cdot (1 - q_r - q_p) = -q_r + q_p\\
+2q_r + q_p - 1 = -q_r + q_p
+\end{array}
+\right. \)
+\end{minipage}
+\begin{minipage}[t]{0.07\textwidth}
+	\raisebox{-.5\height}{\scalebox{2}{$\Rightarrow$}}
+\end{minipage}
+\begin{minipage}[t]{0.3\textwidth}
+	\(\left \{ \begin{array}{l}
+		q_r = \frac{1}{3} \\
+		q_p = \frac{\alpha + 1}{3} \\
+		q_s = 1 - q_r - q_p = \frac{1 - \alpha}{3}
+	\end{array}
+	\right. \)
+\end{minipage} \\
+Since Philip is mixing in a Nash Equilibrium, the opponent must mix with weights \(\left(\frac{1}{3},\frac{\alpha + 1}{3},\frac{1 - \alpha}{3}\right) \).\\
+Now let's do the same for opponent's expected payoffs, defining as $q'_r$, $q'_p$ and $q'_s = 1 - q'_r - q'_p$ the probability that Philip plays R, P or S respectively:
+\begin{itemize}
+	\item Opponent expected payoff playing R: $0 \cdot q'_r - 1 \cdot q'_p + 1 \cdot (1 - q'_r - q'_p) = -2q'_p - q'_r + 1$
+	\item Opponent expected payoff playing S: $1 \cdot q'_r + 0 \cdot q'_p - 1 \cdot (1 - q'_r - q'_p) = 2q'_r + q'_p - 1$
+	\item Opponent expected payoff playing P: $-1 \cdot q'_r + 1 \cdot q'_p + 0 \cdot (1 - q'_r - q'_p) = -q'_r + q'_p$
+\end{itemize}
+Since the strategy must be best responses, the payoffs must be equal, and we obtain: \\
+\begin{minipage}[t]{0.4\textwidth}
+	\(\left \{ \begin{array}{l}
+	-2q'_p - q'_r + 1 = 2q'_r + q'_p - 1 \\
+	-2q'_p - q'_r + 1 = -q'_r + q'_p \\
+	-2q'_r + q'_p - 1 = -q'_r + q'_p
+	\end{array}
+	\right. \)
+\end{minipage}
+\begin{minipage}[t]{0.07\textwidth}
+\raisebox{-.5\height}{\scalebox{2}{$\Rightarrow$}}
+\end{minipage}
+\begin{minipage}[t]{0.3\textwidth}
+\(\left \{ \begin{array}{l}
+q'_r = \frac{1}{3} \\
+q'_p = \frac{1}{3} \\
+q'_s = 1 - q_r - q_p = \frac{1}{3}
+\end{array}
+\right. \)
+\end{minipage} \\
+Since the opponent is mixing in a Nash Equilibrium, Philip must mix with weights \(\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right) \).\\
+So the MNE is:
+\(\left[\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right),\left(\frac{1}{3},\frac{\alpha + 1}{3},\frac{1 - \alpha}{3}\right) \right] \).\\
+Finally we can calculate Philip's payoff as follow: \\
+$\alpha \cdot q_r \cdot q'_r + (\alpha - 1) \cdot q_p \cdot q'_r + (\alpha + 1) \cdot q_s \cdot q'_r + 1 \cdot q_r \cdot q'_p + 0 \cdot q_p \cdot q'_p + (-1) \cdot q_s \cdot q'_p + (-1) \cdot q_r \cdot q'_s + 1 \cdot q_p \cdot q'_s + 0 \cdot q_s \cdot q'_s = \frac{\alpha}{3}$
 
-\subsubsection*{Solution}
+\subsubsection*{Solution for $\mathbf{\alpha \ge 1}$}
+\begin{minipage}[c]{10cm}
+	In this case, looking at the table it's possible to see that simplifications can be made: for Philip, P is dominated by R because of $\alpha \ge 1$, so we can delete the relative row. After that, for the opponent S is dominated by R, so we can delete the relative column. \\
+\end{minipage}
+\begin{tabular}{ |c|c|c|c| }
+\hline
+Ph/Op & R & P & S \\
+\hline
+R &  $\alpha$, 0  &  $(\alpha-1)$, 1 &  $(\alpha+1)$, -1 \\
+\hline
+P &  1, -1  &  0 , 0 &  -1 , 1 \\
+\hline
+S &  -1, 1  &  1 , -1 &  0 , 0 \\
+\hline
+\end{tabular}
+Let's define as $q_r$ and $q_p = 1 - q_r$ the probability that the opponent plays R or P respectively, while as $q'_r$ and $q'_s = 1 - q'_r$ the probability that Philip plays R or S respectively. \\
+We have the following payoffs:
+\begin{tabular}{ |c|c|c| }
+	\hline
+	 & Philip & Opponent \\
+	\hline
+	R &  $\alpha \cdot q_r + (\alpha - 1) \cdot (1 - q_r) = q_r + \alpha - 1$  &  $0 \cdot q'_r + 1 \cdot (1 - q'_r) = 1 - q'_r$  \\
+	\hline
+	P &  none  & $1 \cdot q'_r -1 \cdot (1 - q'_r) = 2q'_r - 1$ \\
+	\hline
+	S &  $-1 \cdot q_r + 1 \cdot (1 - q_r) = -2q_r + 1$  &  none  \\
+	\hline
+\end{tabular}
+Since the strategy must be best responses, the payoffs of each player must be equal, and we obtain:  $q_r = \frac{2-\alpha}{3}$, $q_p = \frac{\alpha + 1}{3}$, $q'_r = \frac{2}{3}$ and $q'_s = \frac{1}{3}$. \\
+So the MNE is: 
+\(\left[\left(\frac{2}{3},\frac{1}{3}\right),\left(\frac{2-\alpha}{3},\frac{\alpha + 1}{3}\right) \right] \).\\
+Finally we can calculate Philip's payoff as follow: \\ 
+$\alpha \cdot q_r \cdot q'_r + (\alpha - 1) \cdot q_p \cdot q'_r + (-1) \cdot q_r \cdot q'_s + 1 \cdot q_p q'_s = \frac{2\alpha-1}{3}$.
 
 \newpage
 
