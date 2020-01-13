@@ -51,15 +51,68 @@ s.t. \qquad \qquad \sum\limits_{j \in O}x_{ij} = 1 , \forall{i \in F}\\
 \right. \)\\
 For the relaxation of this problem to a LP problem, we need simply to change the last condition in $x_{ij} \in [0, 1]$ ($0 \leq x_{ij} \leq 1$).
 \subsection*{Second Problem}
-Give a polynomial-time algorithm that, from anygiven optimal LP-solution, computes an optimal integer assignment, knowing that there is no \textit{integrality gap} and for every fractional LP-solution, there exists an integralfeasible solution with the same cost.
+Give a polynomial-time algorithm that, from any
+given optimal LP-solution, computes an optimal integer assignment, knowing that there is no \textit{integrality gap} and for every fractional LP-solution, there exists an integral
+feasible solution with the same cost.
 \subsubsection*{Solution}
+Let's assume that $\hat{x}$ is an optimal solution for the LP. If, for each $x_{ij} \in \hat{x}$, we have that $x_{ij} \in \{0,1\}$, then $\hat{x}$ is also an optimal solution for the ILP. \\
+ But, if $\exists \; x_{ij} \in [0,1]$ then $\hat{x}$ is fractional so it is not an optimal solution
+for the ILP problem. \\
+ Now, consider the subgraph $H \in G$ (where $G$ is the graph composed by the matching of the two sets $F$
+and $O$) comprising all the fractional values $x_{ij} \in \hat{x}$ (so $H$ will be a graph whose edges are the ones with fractional weights deriving from $\hat{x}$). \\
+Now, either $H$ is a cycle or it is a path whose source and sink vertices have all incident edges
+$e_{ij} \in G.edges$ with $x_{ij} = 0$ except for one that has weight less then 1. In order to prove this, each edge that belongs to
+$H$ has a fractional weight by definition. Let $(v_1, v_2) \in H$ be the first edge of a path, obviously we have $ 0 < x_{ij} < 1$.
+All the other incident edges of $v_1$ that are not in $H$ cannot have $x_{ij} = 1$ (otherwise the constraints will be violated) or
+$0 < x_{ij} < 1$ (otherwise they will be in H), so for all this edges we will have $x_{ij} = 0$. Now, consider a graph $H$ defined as before. We can define the following value at the beginning of each step of the algorithm:
+\begin{equation}
+\epsilon = \min_{\{i,j\} \in H} (x_{ij}, 1-x_{ij})
+\end{equation}
+At each step of the algorithm, for each $x_ij \in \bar{x}$ we compute the two following updates:
+\begin{equation}
+x_{ij}^{'} = \begin{cases}
+x_{ij} - \epsilon, & \mbox{if } e_{ij} \mbox{ has odd idx in G.edges} \land e_{ij} \in H.edges \\
+x_{ij} + \epsilon, & \mbox{if } e_{ij} \mbox{ has even idx in G.edges} \land e_{ij} \in H.edges\\
+x_{ij} , &\mbox {if } e_{ij} \notin H.\mbox{edges}\end{cases}
+\end{equation}
+\begin{equation}
+x_{ij}^{''} = \begin{cases}
+x_{ij} - \epsilon, & \mbox{if } e_{ij} \mbox{ has odd idx in G.edges} \land e_{ij} \in H.edges \\
+x_{ij} + \epsilon, & \mbox{if } e_{ij} \mbox{ has even idx in G.edges} \land e_{ij} \in H.edges\\
+x_{ij} , &\mbox {if } e_{ij} \notin H.\mbox{edges}\end{cases}
+\end{equation}
+We define $x'$ as the solution whose elements are $x_{ij}^{'}$ and $x''$ the solution whose elements are $x_{ij}^{''}$. At each step we perform the two updates over the solution with the highest number of integer values. The number of steps required to obtain an integral solution is $O(n)$ where $n$ is the number of fractional solutions in the initial optimal solution $\hat{x}$ of the LP. The most important thing is that, for every intermediate solution computed (so $x'$ and $x''$) the value of the objective function doesn't change, so also at the end of the algorithm it will be the same as the beginning.
 
 \newpage
 
 \section*{Exercise 2}
-\subsection*{Problem}
-
+\subsection*{First Problem}
+We need to show that $\mathop{\mathbb{E}}[|B'|] \le 2|OPT|$.
 \subsubsection*{Solution}
+Let's define two variables $X_i$ a d $Y_i$, the first is set to 1 if the algorithm adds a vertex belonging to OPT and to 0 otherwise, while the second is set to 1 if the algorithm adds a vertex not belonging to OPT and to 0 otherwise. Let's define also $X = \sum\limits_{i}X_i$ and $Y = \sum\limits_{i}Y_i$. \\
+In this way we have that $|B'| = X + Y$ and $X \le |OPT|$. \\
+Now let's consider this: if an edge $e$ is already covered, we have $X_i = Y_i = 0$, if both vertices of $e$ belong to OPT, then $X_i = 1$ and $Y_i = 0$, and $Pr[X_i] = Pr[Y_i] = \frac{1}{2}$ otherwise. \\
+So we can see that $Pr[Y_i] \le Pr[X_i]$, and it means that $\mathop{\mathbb{E}}[|Y|] \le \mathop{\mathbb{E}}[|X|]$. \\
+Finally we have $\mathop{\mathbb{E}}[|B'|] = \mathop{\mathbb{E}}[|X + Y|] = \mathop{\mathbb{E}}[|X|] + \mathop{\mathbb{E}}[|Y|] \le 2\mathop{\mathbb{E}}[|X|] \le 2|OPT|$, so $\mathop{\mathbb{E}}[|B'|] \le 2|OPT|$.
+
+\subsection*{Second Problem}
+We need to show that for every constant $c \ge 1$, the algorithm might produce a $B'$ with $|B'| \ge c|OP T|$.
+\subsubsection*{Solution}
+Given a star graph of $c + 1$ vertices we have that the optimal solution is to choose the center ($|OPT| = 1$). Now suppose that for each edge the algorithm chooses the other vertex (that is not the center). In this way the algorithm chooses $c$ different vertices, so $|B'| = c|OPT|$. \\
+Since it is the worst case, we have that $|B'| \le c|OPT|$.
+
+\subsection*{Third Problem}
+We need to say why there is not much hope of deriving an efficient, deterministicversion using the method of conditional expectation.
+\subsubsection*{Solution}
+In order to apply the condition expectation to have a deterministic algorithm, we can do as follow: \\
+When the edge $e$ is not covered and we need to add one of its endpoints, we can analyze how each of the two endpoints impacts the expectation value of the solution $E[|B'|]$. I define a variable $Y=(v_1,v_2,...)$ for each chosen edge $e$: it's equal to the vertex chosen.\\
+Let's suppose that $i$ edges are already covered and $j$ vertices already added in $B'$. Now we have an edge $e=(u,v)$ to cover and we want to add what minimizes the expected $|B'| = S$:
+\begin{center}
+	$E[|B'||y_1=v_1,...,y_i=v_j]=\frac{1}{2}E[|B'||y_1=v_1,...,y_i=v_j\land Y_{i+1}=u]+\frac{1}{2}E[|B'||y_1=v_1,...,y_i=v_j\land Y_{i+1}=v]$
+\end{center}
+Now we can compute $E[|B'||y_1=v_1,...,y_i=v_j\land Y_{i+1}=v_{j+1}]$ as $j + 1$ + all the vertices needed to cover the remaining edges. To compute the number of these uncovered edges, we can consider the already covered edges, the new added vertex and all his outgoing edges not covered:\\
+$E-\{e_1,...,e_i\}-\{e$ | $e$ is outgoing vertex of $v_{j+1}\land y_e=0\}$\\
+The issue, that makes not efficient deterministic problem, is the difficulty and hard computation to find number of vertices needed to cover the uncovered edges.
 
 \newpage
 
@@ -164,15 +217,53 @@ $\alpha \cdot q_r \cdot q'_r + (\alpha - 1) \cdot q_p \cdot q'_r + (-1) \cdot q_
 
 \section*{Exercise 4}
 \subsection*{Problem}
-
+Given $n$, the number of students, and assuming that each student $a_i$ and $b_i$isuniformly distributed in $[0, 1]$, show that there are $\mathbf{O}(\log n)$ students worthy of an award, withhigh probability.
 \subsubsection*{Solution}
-
+We can order the students according to $a_i$ in descending order. \\
+The first student will get the award for sure, since he has the highest $a_i$. \\
+The other students will get the award if and only if $b_i > b_1$. \\
+Now let's define with $X_i \in {0, 1}$ the variable that describes if the student i gets the award, and with $X = \sum\limits_{i = 1}^n X_i$ the number of student that have a reward. \\
+We have that $\mathop{\mathbb{E}}[X_i] = Pr[X_i] = \frac{1}{i}$. \\
+So $\mathop{\mathbb{E}}[X] = \sum\limits_{i = 1}^n \frac{1}{i} = \ln n + \mathbf{O}(1)$. \\
+Now let's apply Chernoff Bound: \\
+$Pr[X > (1 + \delta)\mathop{\mathbb{E}}[X]] < e^{-\delta^2 \cdot \frac{\mu}{3}}$. \\
+Choosing $\mu = \ln n$ and $\delta = \frac{1}{2}$, we have: \\
+$Pr[X > (1 + \delta)\ln n] < e^{-\frac{1}{4} \cdot \frac{\mu}{3}} = \frac{1}{\sqrt[12]{e^{\ln(n)}}} = \frac{1}{\sqrt[12]{n}}$. \\
+Finally, for high values of $n$ this values tents to 0, so there are $\mathbf{O}(log n)$ students that will get an award with high probability.
+ 
 \newpage
 
 \section*{Exercise 5}
-\subsection*{Problem}
-
+\subsection*{First Problem}
+We need to show that $|T1| + 2|T2| + 3|T3| = |E|(|V | − 2)$.
 \subsubsection*{Solution}
+Given an edge $e = (u, v)$ of the graph $G = (V, E)$, we need to build a triple choosing any vertex in the set $V \setminus \{u, v\}$
+For every edge $e \in E$ there could be three cases:
+\begin{itemize}
+	\item $(e, w) = (u, v, w) \in T1$: count it one time;
+	\item $(e, w) = (u, v, w) \in T2$: count it two times, since one time we have this triple as $(e, w) = (u, v, w)$, and another time when we have the edge $(v, w)$ and the vertex $u$ (or the edge $(u, w)$ and the vertex $v$);
+	\item $(e, w) = (u, v, w) \in T3$: count it three times, for the same reason as before.
+\end{itemize}
+Since the number of triple generated by the algorithm is $|E|(|V|-2)$ because for every edge we test all possible $|V| - 2$ vertices, the triple in $T1$ are generated one time, in $T2$ two times and in $T3$ three times, we have that $|T1| + 2|T2| + 3|T3| = |E|(|V | − 2)$.
 
+\subsection*{Second Problem}
+We need to show that $\frac{1}{s}\sum\limits_{i = 1}^s x_i\frac{|E|(|V|-2)}{3}$ is an estimator of T3.
+\subsubsection*{Solution}
+The expected value of the output value $x$ of the algorithm is $\mathop{\mathbb{E}}[x] = \frac{3|T3|}{|T1| + 2|T2| + 3|T3|} = \frac{3|T3|}{|E|(|V| - 2)}$. \\
+So we have $|T3| = \mathop{\mathbb{E}}[x] \cdot \frac{|E|(|V| - 2)}{3|T3|}$. \\
+Now let's use $(\frac{1}{s}\sum\limits_{i = 1}^s x_i)$ as an estimator for $\mathop{\mathbb{E}}[x]$.
+Finally we have that $\tilde{T3} = \frac{1}{s}\sum\limits_{i = 1}^s x_i\frac{|E|(|V|-2)}{3}$ is an estimator for $T3$.
+
+\subsection*{Third Problem}
+We need to find a nontrivial number $s$ of executions of the algorithm which are sufficient in order
+obtain an $(1 + \epsilon)$ and an $(1 - \epsilon)$ approximation of T3 with probability at least $1 - \delta$.
+\subsubsection*{Solution}
+In other words, we need to show that we have $(1 - \epsilon)|T3| < \tilde{T3} < (1 + \epsilon)|T3|$ with probability $(1 - \delta)$. \\
+Using Chernoff Bound we have: \\
+\begin{itemize}
+	\item \textbf{Lower tail}: $\mathbf{Pr}[\frac{1}{s}\sum\limits_{i = 1}^s x_i \le (1 - \epsilon)\mathop{\mathbb{E}}[x]] \le e^{-\frac{\mathop{\mathbb{E}}[x] \cdot \epsilon^2}{2}}$
+	\item \textbf{Upper tail}: $\mathbf{Pr}[\frac{1}{s}\sum\limits_{i = 1}^s x_i \ge (1 + \epsilon)\mathop{\mathbb{E}}[x]] \le e^{-\frac{\mathop{\mathbb{E}}[x] \cdot \epsilon^2}{3}}$
+\end{itemize}
+For $s \ge \frac{3}{\epsilon^2} \cdot \frac{|T1| + 2|T2| + 3|T3|}{|T3|} \cdot \ln(\frac{2}{\delta})$ the sum of both probabilities is bounded by $\delta$.
 
 \end{document}
